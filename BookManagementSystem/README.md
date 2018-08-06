@@ -13,7 +13,7 @@
     - Press,category is not required , their default value are both ""
    
 2. **/lendbook?user=&bookname=**
-    - Implement function which user borrow the book named bookname**
+    - Implement function which user borrow the book named bookname
     - If there is no book named bookname or all books have  been borrowed ,it will return the prompt 
     - Else, it will update the user and lendtiem fields in table. And return the prompt 
     
@@ -23,8 +23,8 @@
     - Else ,it will set the user and lendtime to "" and return te prompt .
     
 4. **/update?condition=&bookname=&category=&press=&isbn=**
-    a. Condition is the required, it's th value of isbn where want to update
-    b. Bookname,category,press,isbn is not required, it's the new value of the corresponding field.
+    - Condition is the required, it's th value of isbn where want to update
+    - Bookname,category,press,isbn is not required, it's the new value of the corresponding field.
 
 5. **/describle?start=&nums=**
     - Return the record of the table the where the rownum is between start and start+num.
