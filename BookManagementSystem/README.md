@@ -3,7 +3,7 @@
 
 ### URL API
 
-###localhost:8080/2/ : 
+### localhost:8080/2/ : 
 - If the url begin with the /2, it mean the following operation will to be done in the Mysql.
 
 
