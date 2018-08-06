@@ -15,30 +15,51 @@ public class BookMysql implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-
-
     @Column
     private String isbn;
     @Column
     private String bookname;
     @Column
+    private String press;
+    @Column
     private String  category;
     @Column
-    private String publicationyear;
-    @Column
     private Date updatetime;
+    @Column
+    private String user;
+    @Column
+    private String lendtime;
+    @Column
+    private String returntime;
+
 
     public BookMysql(){};
 
-    public BookMysql(String isbn, String bookname, String category, String publicationyear, Date updatetime) {
+    public BookMysql(String isbn, String bookname, String press, String category, Date updatetime,String user,String lendtime,String returntime) {
         this.isbn = isbn;
         this.bookname = bookname;
+        this.press=press;
         this.category = category;
-        this.publicationyear = publicationyear;
         this.updatetime = updatetime;
+        this.user=user;
+        this.lendtime=lendtime;
+        this.returntime=returntime;
     }
 
-    public String getIsbn(){
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getIsbn() {
         return isbn;
     }
 
@@ -54,6 +75,14 @@ public class BookMysql implements Serializable {
         this.bookname = bookname;
     }
 
+    public String getPress() {
+        return press;
+    }
+
+    public void setPress(String press) {
+        this.press = press;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -62,12 +91,28 @@ public class BookMysql implements Serializable {
         this.category = category;
     }
 
-    public String getPublicationyear() {
-        return publicationyear;
+    public String getUser() {
+        return user;
     }
 
-    public void setPublicationyear(String publicationyear) {
-        this.publicationyear = publicationyear;
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getLendtime() {
+        return lendtime;
+    }
+
+    public void setLendtime(String lendtime) {
+        this.lendtime = lendtime;
+    }
+
+    public String getReturntime() {
+        return returntime;
+    }
+
+    public void setReturntime(String returntime) {
+        this.returntime = returntime;
     }
 
     public String getUpdatetime() {
@@ -82,12 +127,15 @@ public class BookMysql implements Serializable {
     @Override
     public String toString() {
         return "BookMysqlString{" +
-                "id="+id+
-                "isbn=" + isbn +'\'' +
+                "id=" + id +
+                ", isbn=" + isbn +'\'' +
                 ", bookname='" + bookname + '\'' +
+                ", press='" + press + '\'' +
                 ", category=" + category +
-                ", publicationyear='" + publicationyear+ '\'' +
                 ", updatetime='" + getUpdatetime()+ '\'' +
+                ", user='" + user+ '\'' +
+                ", lendtime='" + getLendtime()+ '\'' +
+                ", returntime='" + getReturntime()+ '\'' +
                 '}';
     }
 }
