@@ -43,11 +43,11 @@ public class MysqlController {
 
     @RequestMapping(value = "/describle", method = RequestMethod.GET)
     public  Collection<BookMysql> describleBook(
-//            @RequestParam(value = "start", required = false,defaultValue = "5") String start,
-            @RequestParam(value = "end", required = false,defaultValue = "all") String end){
-//        int starts = Integer.valueOf(start);
-        int ends = (end.equals("all"))?bookRepositoryMysql.countAll():Integer.valueOf(end);
-        return bookRepositoryMysql.describle(ends);
+            @RequestParam(value = "start", required = false,defaultValue = "0") String start,
+            @RequestParam(value = "nums", required = false,defaultValue = "all") String nums){
+        int starts = Integer.valueOf(start);
+        int num = (nums.equals("all"))?bookRepositoryMysql.countAll():Integer.valueOf(nums);
+        return bookRepositoryMysql.describle(starts, num);
     }
 
     @RequestMapping(value="/lendbook", method = RequestMethod.GET)
@@ -91,10 +91,8 @@ public class MysqlController {
                                         @RequestParam(value = "category", required = false,defaultValue = "") String category,
                                         @RequestParam(value = "press", required = false) String press,
                                         @RequestParam(value = "isbn", required = false) String isbn,
-                                        @RequestParam(value = "condition", required = true) String condition,
-                                        HttpServletResponse response) throws IOException {
+                                        @RequestParam(value = "condition", required = true) String condition){
         String datetime = df.format(new Date());
-//        try {
         if (!StringUtils.isBlank(bookname))bookRepositoryMysql.updateBookname(bookname, datetime, condition);
         if (!StringUtils.isBlank(category))bookRepositoryMysql.updateCategory(category, datetime, condition);
         if (!StringUtils.isBlank(press)) bookRepositoryMysql.updatePress(press, datetime, condition);
@@ -102,15 +100,19 @@ public class MysqlController {
 
         String tmpisbn=(StringUtils.isBlank(isbn))?condition:isbn;
         return bookRepositoryMysql.selectByIsbn(tmpisbn);
-
-//        }catch (IOException e){
-//            String tmpisbn = (StringUtils.isBlank(isbn)) ?condition:isbn;
-//            response.getWriter().println("There is no record where the isbn= "+tmpisbn);
-//        }
     }
 
-    @RequestMapping(value="/select", method = RequestMethod.GET)
-    public Collection<BookMysql> selectById(@RequestParam(value = "id", required = true) Long id){
-        return bookRepositoryMysql.selectById(id);
+    @RequestMapping(value="/select/bookname/{bookname}", method = RequestMethod.GET)
+    public Collection<BookMysql> findByBooknameContains(@PathVariable(required = true) String bookname){
+        return bookRepositoryMysql.findByBooknameContains(bookname);
     }
+
+    @RequestMapping(value="/select/user/{user}", method = RequestMethod.GET)
+    public Collection<BookMysql> findByUserEquals(@PathVariable(required = true) String user){
+        return bookRepositoryMysql.findByUserEquals(user);
+    }
+
+
+
+
 }
