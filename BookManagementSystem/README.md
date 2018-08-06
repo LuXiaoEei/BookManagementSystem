@@ -38,5 +38,5 @@
 7. **/select/user/{user}**
     - Used to find the book which the user is borrowing
     - User is required
-    - It will do accurate matching 
+    - It will do accurate matching
     
