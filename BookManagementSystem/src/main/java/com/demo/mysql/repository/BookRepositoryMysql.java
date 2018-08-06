@@ -31,6 +31,9 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
     @Query(value = "select * from book where id=?1",nativeQuery = true)
     Collection<BookMysql> selectById(Long id);
 
+    @Query(value = "select * from book where isbn=?1",nativeQuery = true)
+    Collection<BookMysql> selectByIsbn(String isbn);
+
     @Query(value = "SELECT *  FROM book  where user = ?1 and bookname=?2",nativeQuery = true)
     Collection<BookMysql> serachlendedBookByBooknameAndUser(String user,String bookname);
 
@@ -39,6 +42,25 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
     @Query(value = "update book set user='',lendtime='' where id =?1",nativeQuery = true)
     Integer returnBook(Long id);
 
+    @Modifying
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    @Query(value = "update book set bookname=?1,updatetime=?2 where isbn =?3",nativeQuery = true)
+    Integer updateBookname(String newbookname,String updatetime,String isbn);
+
+    @Modifying
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    @Query(value = "update book set press=?1,updatetime=?2 where isbn =?3",nativeQuery = true)
+    Integer updatePress(String newpress,String updatetime,String isbn);
+
+    @Modifying
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    @Query(value = "update book set category=?1,updatetime=?2 where isbn =?3",nativeQuery = true)
+    Integer updateCategory(String newcategory,String updatetime,String isbn);
+
+    @Modifying
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    @Query(value = "update book set isbn=?1,updatetime=?2 where isbn =?3",nativeQuery = true)
+    Integer updateIsbn(String newisbn,String updatetime,String isbn);
 
 
 //    @Modifying

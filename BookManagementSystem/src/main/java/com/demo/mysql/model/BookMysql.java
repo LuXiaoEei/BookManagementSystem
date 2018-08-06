@@ -134,8 +134,8 @@ public class BookMysql implements Serializable {
                 ", category=" + category +
                 ", updatetime='" + getUpdatetime()+ '\'' +
                 ", user='" + user+ '\'' +
-                ", lendtime='" + getLendtime()+ '\'' +
-                ", returntime='" + getReturntime()+ '\'' +
+                ", lendtime='" + lendtime+ '\'' +
+                ", returntime='" + returntime+ '\'' +
                 '}';
     }
 }
