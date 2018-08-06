@@ -4,7 +4,7 @@
 ### URL API
 
 ### localhost:8080/2/ : 
-- If the url begin with the /2, it mean the following operation will to be done in the Mysql.
+- If the url begin with the /2 after 8080, it mean the following operation will to be done in the Mysql.
 
 
 1. **/add?isbn=&bookname=&press=&category=**
