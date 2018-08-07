@@ -9,14 +9,14 @@ import java.util.Collection;
 
 public interface BookRepositoryGemfire extends CrudRepository<BookGemfire,String> {
 
-    @Trace
-    Collection<BookGemfire> findByBookname(String name);
+    @Query("SELECT * FROM /BookGemfire p WHERE p.user = $1")
+    Collection<BookGemfire> findByUser(String user);
 
     @Trace
-    Collection<BookGemfire> findByIsbn(int age);
-
+    Collection<BookGemfire> findByIsbn(String isbn);
     @Trace
-    Collection<BookGemfire> findByBooknameLike(String email);
+    @Query("SELECT * FROM /BookGemfire p WHERE p.bookname LIKE $1")
+    Collection<BookGemfire> findByBooknameLike(String bookname);
 
 //    @Query("SELECT * FROM /BookGemfire p WHERE p.email LIKE $1")
 //    Collection<BookGemfire> getPersonsByEmailLike(String email);
@@ -28,5 +28,5 @@ public interface BookRepositoryGemfire extends CrudRepository<BookGemfire,String
     Integer countAll();
 
     @Trace
-    String deleteByBookname(String name);
+    void deleteById(String id);
 }
