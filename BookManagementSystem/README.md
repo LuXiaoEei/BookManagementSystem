@@ -3,14 +3,13 @@
 
 ### URL API
 
-### localhost:8080/2/ : 
+### localhost:8080/2: 
 - If the url begin with the /2 after 8080, it mean the following operation will be done in the Mysql.
 
-
 1. **/add?isbn=&bookname=&press=&category=**
-    - Add book
-    - Isbn,bookname is required
-    - Press,category is not required , their default value are both ""
+        - Add book
+        - Isbn,bookname is required
+        - Press,category is not required , their default value are both ""
    
 2. **/loadbook?user=&isbn=**
     - Implement function which user borrow the book named bookname
@@ -43,5 +42,45 @@
     
 8. **/delete?isbn=**
     - isbn is required.
+    - Depend on the ibsn, it will  delete the corresponding rerord.
+    
+### localhost:8080/1: 
+- If the url begin with the /1 after 8080, it mean the following operation will be done in the Gemfire.
+1. **/add?id=&isbn=&bookname=&press=&category=&user=&loantime=&returntime**
+   
+      - Add book
+      - Id, isbn, bookname is required
+      - Press, category, user, returntime, loantime are not required , their default values are both ""
+   
+2. **/loadbook?user=&isbn=**      
+         
+      - Implement function which user borrows the book by isbn
+      - If the book is available, it will update the loantime, user and return the entry
+      - If there is no book named bookname or all books have been borrowed ,it will return the notice of no available book
+  
+3. **/returnbook?user=&isbn=**
+    - Implement function which user return the book by isbn and isbn
+    - It will directly update the return time 
+
+4. **/update?condition=&bookname=&category=&press=&isbn=**
+    - Condition is the required, it's th value of isbn where want to update
+    - Bookname,category,press,isbn is not required, it's the new value of the corresponding field.
+ 
+5. **/describe?nums=**
+    - Return the top nums record of the table 
+    - nums is not required which default value is -1
+
+6. **/select/bookname/{bookname}**
+    - Used to search book depend on the bookname
+    - Bookname is required
+    - Depend on the parameter bookname to do fuzzy matching 
+    
+7. **/select/user/{user}**
+    - Used to find the book which the user is borrowing
+    - User is required
+    - It will do accurate matching
+    
+8. **/delete?isbn=**
+    - Isbn is required.
     - Depend on the ibsn, it will  delete the corresponding rerord.
     

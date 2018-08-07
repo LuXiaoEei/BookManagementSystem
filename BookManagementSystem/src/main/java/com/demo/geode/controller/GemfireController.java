@@ -97,7 +97,7 @@ public class GemfireController {
         return result;
     }
 
-    @RequestMapping(value = "/loan", method = RequestMethod.GET)
+    @RequestMapping(value = "/loanbook", method = RequestMethod.GET)
     public String loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                            @RequestParam(value = "user", required = true) String user) throws ParseException {
         Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(isbn);
