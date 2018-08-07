@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/1" ,method = RequestMethod.GET)
@@ -45,7 +46,9 @@ public class GemfireController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Collection<BookGemfire> deleteBook(@RequestParam(value = "isbn", required = true) String isbn){
         Collection<BookGemfire> result =bookRepositoryGemfire.findByIsbn(isbn);
-        bookRepositoryGemfire.deleteById(result.iterator().next().getId());
+        for (BookGemfire element:result){
+            bookRepositoryGemfire.deleteById(element.getId());
+        }
         return result;
     }
 
@@ -61,8 +64,8 @@ public class GemfireController {
         return result;
     }
 
-    @RequestMapping(value = "/describe/{num}", method = RequestMethod.GET)
-    public Collection<BookGemfire> describe(@PathVariable(required = false) int num) {
+    @RequestMapping(value = "/describe", method = RequestMethod.GET)
+    public Collection<BookGemfire> describe(@RequestParam(value = "nums", required = false,defaultValue = "-1") int num) {
         Collection<BookGemfire> result = bookRepositoryGemfire.describle(num);
         return result;
     }
@@ -71,43 +74,56 @@ public class GemfireController {
     public Collection<BookGemfire> updateBook(@RequestParam(value = "press", required = false) String press,
                                               @RequestParam(value = "category", required = false,defaultValue = "") String category,
                                               @RequestParam(value = "bookname", required = false) String bookname,
-                                              @RequestParam(value = "isbn", required = true) String isbn) {
-        Collection<BookGemfire> result=bookRepositoryGemfire.findByIsbn(isbn);
+                                              @RequestParam(value = "isbn", required = false) String isbn,
+                                              @RequestParam(value = "condition", required = true) String condition) {
+        Collection<BookGemfire> result=bookRepositoryGemfire.findByIsbn(condition);
         if(!StringUtils.isBlank(bookname))
-            result.iterator().next().setBookname(bookname);
+            for (BookGemfire element:result){
+                element.setBookname(bookname);
+            }
         if(!StringUtils.isBlank(press))
-            result.iterator().next().setPress(press);
+            for (BookGemfire element:result){
+                element.setPress(press);
+            }
         if (!StringUtils.isBlank(category))
-            result.iterator().next().setCategory(category);
-        bookRepositoryGemfire.save(result.iterator().next());
+            for (BookGemfire element:result){
+                element.setCategory(category);
+            }
+        if (!StringUtils.isBlank(isbn))
+            for (BookGemfire element:result){
+                element.setIsbn(isbn);
+            }
+        bookRepositoryGemfire.saveAll(result);
         return result;
     }
 
     @RequestMapping(value = "/loan", method = RequestMethod.GET)
     public String loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                            @RequestParam(value = "user", required = true) String user) throws ParseException {
-        Collection<BookGemfire> result =bookRepositoryGemfire.findByIsbn(isbn);
-        BookGemfire temp=result.iterator().next();
-        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        if (temp.getLoantime().equals("")){
-            temp.setLoantime(df.format(new Date()));
-            temp.setUser(user);
-            bookRepositoryGemfire.save(temp);
-            return result.toString();
+        Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(isbn);
+        for (BookGemfire element : result) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            if (element.getLoantime().equals("")) {
+                element.setLoantime(df.format(new Date()));
+                element.setUser(user);
+                bookRepositoryGemfire.save(element);
+                return element.toString();
+            } else if (!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
+                element.setLoantime(df.format(new Date()));
+                element.setUser(user);
+                bookRepositoryGemfire.save(element);
+                return element.toString();
+            } else
+                continue;
         }
-        else if (!temp.getReturntime().equals("")&&df.parse(temp.getReturntime()).after(df.parse(temp.getLoantime()))){
-            temp.setLoantime(df.format(new Date()));
-            temp.setUser(user);
-            bookRepositoryGemfire.save(temp);
-            return result.toString();
-        }else
-            return "Sorry, the book has been loaned";
+        return "Sorry, the book has been loaned";
     }
 
     @RequestMapping(value = "/return", method = RequestMethod.GET)
     public Collection<BookGemfire> returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                                               @RequestParam(value = "user", required = true) String user) throws ParseException {
-        Collection<BookGemfire> result =bookRepositoryGemfire.findByIsbn(isbn);
+        Collection<BookGemfire> result =bookRepositoryGemfire.describle(-1);
+        result =result.stream().filter(book->book.getIsbn().equals(isbn) &book.getUser().equals(user)).collect(Collectors.toList());
         BookGemfire temp=result.iterator().next();
         temp.setUser(user);
         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
