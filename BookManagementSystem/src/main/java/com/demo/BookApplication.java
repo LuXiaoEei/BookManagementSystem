@@ -4,6 +4,7 @@ import com.demo.geode.model.BookGemfire;
 import org.apache.geode.cache.client.ClientRegionShortcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.gemfire.config.annotation.ClientCacheApplication;
@@ -14,7 +15,7 @@ import org.springframework.data.gemfire.repository.config.EnableGemfireRepositor
 
 @SpringBootApplication()
 @ClientCacheApplication(name = "geodeDemo", logLevel = "debug",
-		locators = {@ClientCacheApplication.Locator(host="lcoalhost",port = 12345)})
+		locators = {@ClientCacheApplication.Locator(host="localhost",port = 12345)})
 @EnableGemfireRepositories(basePackages = "com.demo.geode.repository")
 @EnableEntityDefinedRegions(basePackageClasses = BookGemfire.class, clientRegionShortcut = ClientRegionShortcut.PROXY)
 

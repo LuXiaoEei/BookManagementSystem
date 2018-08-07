@@ -28,21 +28,21 @@ public class BookMysql implements Serializable {
     @Column
     private String user;
     @Column
-    private String lendtime;
+    private String loantime;
     @Column
     private String returntime;
 
 
     public BookMysql(){};
 
-    public BookMysql(String isbn, String bookname, String press, String category, Date updatetime,String user,String lendtime,String returntime) {
+    public BookMysql(String isbn, String bookname, String press, String category, Date updatetime,String user,String loantime,String returntime) {
         this.isbn = isbn;
         this.bookname = bookname;
         this.press=press;
         this.category = category;
         this.updatetime = updatetime;
         this.user=user;
-        this.lendtime=lendtime;
+        this.loantime=loantime;
         this.returntime=returntime;
     }
 
@@ -99,12 +99,12 @@ public class BookMysql implements Serializable {
         this.user = user;
     }
 
-    public String getLendtime() {
-        return lendtime;
+    public String getLoantime() {
+        return loantime;
     }
 
-    public void setLendtime(String lendtime) {
-        this.lendtime = lendtime;
+    public void setLoantime(String lendtime) {
+        this.loantime = loantime;
     }
 
     public String getReturntime() {
@@ -134,7 +134,7 @@ public class BookMysql implements Serializable {
                 ", category=" + category +
                 ", updatetime='" + getUpdatetime()+ '\'' +
                 ", user='" + user+ '\'' +
-                ", lendtime='" + lendtime+ '\'' +
+                ", loantime='" + loantime+ '\'' +
                 ", returntime='" + returntime+ '\'' +
                 '}';
     }

@@ -26,7 +26,6 @@ public class MysqlController {
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
         System.out.println("error: "+ex.getMessage());
-//        logger.error("抛异常了！"+ex.getLocalizedMessage());
         response.getWriter().printf("error: "+ex.getMessage());
         response.flushBuffer();
     }
@@ -41,20 +40,20 @@ public class MysqlController {
         return p.toString();
     }
 
-    @RequestMapping(value = "/describle", method = RequestMethod.GET)
-    public  Collection<BookMysql> describleBook(
+    @RequestMapping(value = "/describe", method = RequestMethod.GET)
+    public  Collection<BookMysql> describeBook(
             @RequestParam(value = "start", required = false,defaultValue = "0") String start,
             @RequestParam(value = "nums", required = false,defaultValue = "all") String nums){
         int starts = Integer.valueOf(start);
         int num = (nums.equals("all"))?bookRepositoryMysql.countAll():Integer.valueOf(nums);
-        return bookRepositoryMysql.describle(starts, num);
+        return bookRepositoryMysql.describe(starts, num);
     }
 
-    @RequestMapping(value="/lendbook", method = RequestMethod.GET)
-    public void  lendBook(@RequestParam(value = "bookname", required = true) String bookname,
+    @RequestMapping(value="/loanbook", method = RequestMethod.GET)
+    public void  loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                           @RequestParam(value = "user", required = true) String user,
                           HttpServletResponse response){
-        Collection<BookMysql> res = bookRepositoryMysql.serachNolendedBookByBookname(bookname);
+        Collection<BookMysql> res = bookRepositoryMysql.serachNoloanedBookByIsbn(isbn);
         if (res.isEmpty()){
             try {
                 response.getWriter().println("no book remained");
@@ -65,7 +64,7 @@ public class MysqlController {
             Long id =res.iterator().next().getId();
             bookRepositoryMysql.lendBook(user,df.format(new Date()),id);
             try {
-                response.getWriter().println(user+" success borrowing "+ bookname +" at "+df.format(new Date()));
+                response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -73,16 +72,16 @@ public class MysqlController {
     }
 
     @RequestMapping(value="/returnbook", method = RequestMethod.GET)
-    public void  returnBook(@RequestParam(value = "bookname", required = true) String bookname,
+    public void  returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                           @RequestParam(value = "user", required = true) String user,
                           HttpServletResponse response) throws IOException {
-        Collection<BookMysql> res = bookRepositoryMysql.serachlendedBookByBooknameAndUser(user,bookname);
+        Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
         if (res.isEmpty()){
             response.getWriter().println("you have not borrowed the book");
         }else{
             Long id =res.iterator().next().getId();
             bookRepositoryMysql.returnBook(id);
-            response.getWriter().println(user+" success returning "+ bookname +" at "+ df.format(new Date()));
+            response.getWriter().println(user+" success returning isbn: "+ isbn +" at "+ df.format(new Date()));
             }
         }
 

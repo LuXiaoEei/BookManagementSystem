@@ -18,10 +18,10 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
     Integer countAll();
 
     @Query(value = "SELECT * FROM book limit ?1,?2  ",nativeQuery = true)
-    Collection<BookMysql> describle(int start, int num);
+    Collection<BookMysql> describe(int start, int num);
 
-    @Query(value = "SELECT *  FROM book  where user = '' and bookname=?1",nativeQuery = true)
-    Collection<BookMysql> serachNolendedBookByBookname(String bookname);
+    @Query(value = "SELECT *  FROM book  where user = '' and isbn=?1",nativeQuery = true)
+    Collection<BookMysql> serachNoloanedBookByIsbn(String isbn);
 
     @Modifying
     @Transactional(readOnly = false,rollbackFor = Exception.class)
@@ -34,8 +34,8 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
     @Query(value = "select * from book where isbn=?1",nativeQuery = true)
     Collection<BookMysql> selectByIsbn(String isbn);
 
-    @Query(value = "SELECT *  FROM book  where user = ?1 and bookname=?2",nativeQuery = true)
-    Collection<BookMysql> serachlendedBookByBooknameAndUser(String user,String bookname);
+    @Query(value = "SELECT *  FROM book  where user = ?1 and isbn=?2",nativeQuery = true)
+    Collection<BookMysql> serachloanedBookByBooknameAndIsbn(String user,String isbn);
 
     @Modifying
     @Transactional(readOnly = false,rollbackFor = Exception.class)
