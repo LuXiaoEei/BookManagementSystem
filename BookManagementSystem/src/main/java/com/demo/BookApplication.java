@@ -20,7 +20,8 @@ import org.springframework.data.gemfire.repository.config.EnableGemfireRepositor
 
 @EnablePdx
 public class BookApplication {
-	private static final Logger log = LoggerFactory.getLogger(BookApplication.class);
+//	private static final Logger log = LoggerFactory.getLogger(BookApplication.class);
+
 	public static void main(String[] args) {
 		SpringApplication.run(BookApplication.class, args);
 	}

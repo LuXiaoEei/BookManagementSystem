@@ -25,7 +25,7 @@ public class MysqlController {
     @ExceptionHandler(Exception.class)
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
-        System.out.println("抛异常了！"+ex.getLocalizedMessage());
+        System.out.println("error: "+ex.getMessage());
 //        logger.error("抛异常了！"+ex.getLocalizedMessage());
         response.getWriter().printf("error: "+ex.getMessage());
         response.flushBuffer();
@@ -87,19 +87,25 @@ public class MysqlController {
         }
 
     @RequestMapping(value="/update", method = RequestMethod.GET)
-    public Collection<BookMysql> update(@RequestParam(value = "bookname", required = false) String bookname,
+    public Object update(@RequestParam(value = "bookname", required = false) String bookname,
                                         @RequestParam(value = "category", required = false,defaultValue = "") String category,
                                         @RequestParam(value = "press", required = false) String press,
                                         @RequestParam(value = "isbn", required = false) String isbn,
-                                        @RequestParam(value = "condition", required = true) String condition){
+                                        @RequestParam(value = "condition", required = true) String condition,
+                                        HttpServletResponse response) throws IOException {
         String datetime = df.format(new Date());
-        if (!StringUtils.isBlank(bookname))bookRepositoryMysql.updateBookname(bookname, datetime, condition);
-        if (!StringUtils.isBlank(category))bookRepositoryMysql.updateCategory(category, datetime, condition);
-        if (!StringUtils.isBlank(press)) bookRepositoryMysql.updatePress(press, datetime, condition);
-        if (!StringUtils.isBlank(isbn)) bookRepositoryMysql.updateIsbn(isbn, datetime, condition);
+        if (!StringUtils.isBlank(isbn) && ((isbn.equals("''")|(isbn.equals("\"\""))))){
+            response.getWriter().println("don't set the isbn to null");
+            return null;
+        }else {
+            if (!StringUtils.isBlank(bookname)) bookRepositoryMysql.updateBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname, datetime, condition);
+            if (!StringUtils.isBlank(category)) bookRepositoryMysql.updateCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category, datetime, condition);
+            if (!StringUtils.isBlank(press))bookRepositoryMysql.updatePress((press.equals("''") | (press.equals("\"\""))) ? "" : press, datetime, condition);
+            if (!StringUtils.isBlank(isbn)) bookRepositoryMysql.updateIsbn(isbn, datetime, condition);
 
-        String tmpisbn=(StringUtils.isBlank(isbn))?condition:isbn;
-        return bookRepositoryMysql.selectByIsbn(tmpisbn);
+            String tmpisbn = (StringUtils.isBlank(isbn)) ? condition : isbn;
+            return bookRepositoryMysql.selectByIsbn(tmpisbn);
+        }
     }
 
     @RequestMapping(value="/select/bookname/{bookname}", method = RequestMethod.GET)
@@ -112,7 +118,9 @@ public class MysqlController {
         return bookRepositoryMysql.findByUserEquals(user);
     }
 
-
-
+    @RequestMapping(value="/delete", method = RequestMethod.GET)
+    public Collection<BookMysql> deleteByIsbnEquals(@RequestParam(value = "isbn", required = true) String isbn){
+        return bookRepositoryMysql.deleteByIsbnEquals(isbn);
+    }
 
 }

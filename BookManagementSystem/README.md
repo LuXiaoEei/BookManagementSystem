@@ -15,7 +15,7 @@
 2. **/lendbook?user=&bookname=**
     - Implement function which user borrow the book named bookname
     - If there is no book named bookname or all books have  been borrowed ,it will return the prompt 
-    - Else, it will update the user and lendtiem fields in table. And return the prompt 
+    - Else, it will update the user and lendtime fields in table. And return the prompt 
     
 3. **/returnbook?user=&bookname=**
     - Implement function which user return the book named bookname
@@ -25,6 +25,7 @@
 4. **/update?condition=&bookname=&category=&press=&isbn=**
     - Condition is the required, it's th value of isbn where want to update
     - Bookname,category,press,isbn is not required, it's the new value of the corresponding field.
+    - If want to set one field null, you can set the field to "" or '' , but it's forbidden to do set the isbn to null, if you try to do this, it will throw error. 
 
 5. **/describle?start=&nums=**
     - Return the record of the table the where the rownum is between start and start+num.
@@ -39,4 +40,8 @@
     - Used to find the book which the user is borrowing
     - User is required
     - It will do accurate matching
+    
+8. **/delete?isbn=**
+    - isbn is required.
+    - Depend on the ibsn, it will  delete the corresponding rerord.
     

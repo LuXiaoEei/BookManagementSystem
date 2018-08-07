@@ -66,6 +66,10 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
 
     Collection<BookMysql> findByUserEquals(String user);
 
+    @Transactional(readOnly = false,rollbackFor = Exception.class)
+    Collection<BookMysql> deleteByIsbnEquals(String isbn);
+
+
 
 
 
