@@ -12,12 +12,12 @@
     - Isbn,bookname is required
     - Press,category is not required , their default value are both ""
    
-2. **/lendbook?user=&bookname=**
+2. **/loadbook?user=&isbn=**
     - Implement function which user borrow the book named bookname
     - If there is no book named bookname or all books have  been borrowed ,it will return the prompt 
     - Else, it will update the user and lendtime fields in table. And return the prompt 
     
-3. **/returnbook?user=&bookname=**
+3. **/returnbook?user=&isbn=**
     - Implement function which user return the book named bookname
     - If user doesn't borrow the book,it will return the prompt .
     - Else ,it will set the user and lendtime to "" and return te prompt .
@@ -27,7 +27,7 @@
     - Bookname,category,press,isbn is not required, it's the new value of the corresponding field.
     - If want to set one field null, you can set the field to "" or '' , but it's forbidden to do set the isbn to null, if you try to do this, it will throw error. 
 
-5. **/describle?start=&nums=**
+5. **/describe?start=&nums=**
     - Return the record of the table the where the rownum is between start and start+num.
     - Start and nums are not  both the required,their default value is 0 and the rows of table.
 
