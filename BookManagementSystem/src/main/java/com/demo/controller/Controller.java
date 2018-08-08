@@ -271,8 +271,18 @@ public class Controller {
         switch (datasource){
             case "Gemfire":
                 Collection<BookGemfire> result =bookRepositoryGemfire.describe(-1);
-                if (!result.isEmpty()) {
-                    result = result.stream().filter(book -> book.getIsbn().equals(isbn) & book.getUser().equals(user)).collect(Collectors.toList());
+                result = result.stream().filter(book -> book.getIsbn().equals(isbn) & book.getUser().equals(user)).collect(Collectors.toList());
+                boolean flag= false;
+                if (!result.isEmpty()){
+                    BookGemfire temp1=result.iterator().next();
+                    if (!temp1.getLoantime().equals("")) {
+                        if (temp1.getReturntime().equals(""))
+                            flag=true;
+                        else if(df.parse(temp1.getReturntime()).before(df.parse(temp1.getLoantime())))
+                            flag=false;
+                    }
+                }
+                if (flag) {
                     BookGemfire temp = result.iterator().next();
                     temp.setUser(user);
                     temp.setReturntime(df.format(new Date()));
