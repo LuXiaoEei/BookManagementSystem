@@ -129,7 +129,8 @@ public class GemfireController {
         BookGemfire temp=result.iterator().next();
         temp.setUser(user);
         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        result.iterator().next().setReturntime(df.format(new Date()));
+        temp.setReturntime(df.format(new Date()));
+        bookRepositoryGemfire.save(temp);
         return result;
     }
 }
