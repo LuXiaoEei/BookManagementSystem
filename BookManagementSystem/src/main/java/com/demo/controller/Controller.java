@@ -271,11 +271,16 @@ public class Controller {
         switch (datasource){
             case "Gemfire":
                 Collection<BookGemfire> result =bookRepositoryGemfire.describe(-1);
-                result =result.stream().filter(book->book.getIsbn().equals(isbn) &book.getUser().equals(user)).collect(Collectors.toList());
-                BookGemfire temp=result.iterator().next();
-                temp.setUser(user);
-                result.iterator().next().setReturntime(df.format(new Date()));
-                return result;
+                if (!result.isEmpty()) {
+                    result = result.stream().filter(book -> book.getIsbn().equals(isbn) & book.getUser().equals(user)).collect(Collectors.toList());
+                    BookGemfire temp = result.iterator().next();
+                    temp.setUser(user);
+                    temp.setReturntime(df.format(new Date()));
+                    bookRepositoryGemfire.save(temp);
+                    response.getWriter().println(user + " success returning isbn: " + isbn + " at " + df.format(new Date()));
+                }else
+                    response.getWriter().println("you have not borrowed the book");
+                return null;
 
             case "Mysql":
                 Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
