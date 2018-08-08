@@ -21,6 +21,8 @@ public class GemfireController {
 
     @Autowired
     private BookRepositoryGemfire bookRepositoryGemfire;
+
+
     @ExceptionHandler(Exception.class)
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
         System.out.println("error: "+ex.getMessage());
@@ -66,7 +68,7 @@ public class GemfireController {
 
     @RequestMapping(value = "/describe", method = RequestMethod.GET)
     public Collection<BookGemfire> describe(@RequestParam(value = "nums", required = false,defaultValue = "-1") int num) {
-        Collection<BookGemfire> result = bookRepositoryGemfire.describle(num);
+        Collection<BookGemfire> result = bookRepositoryGemfire.describe(num);
         return result;
     }
 
@@ -119,10 +121,10 @@ public class GemfireController {
         return "Sorry, the book has been loaned";
     }
 
-    @RequestMapping(value = "/return", method = RequestMethod.GET)
+    @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public Collection<BookGemfire> returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                                               @RequestParam(value = "user", required = true) String user) throws ParseException {
-        Collection<BookGemfire> result =bookRepositoryGemfire.describle(-1);
+        Collection<BookGemfire> result =bookRepositoryGemfire.describe(-1);
         result =result.stream().filter(book->book.getIsbn().equals(isbn) &book.getUser().equals(user)).collect(Collectors.toList());
         BookGemfire temp=result.iterator().next();
         temp.setUser(user);

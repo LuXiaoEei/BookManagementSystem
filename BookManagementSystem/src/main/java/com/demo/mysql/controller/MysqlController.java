@@ -37,7 +37,7 @@ public class MysqlController {
                             @RequestParam(value = "category", required = false,defaultValue = "") String category) {
             BookMysql p = new BookMysql(isbn,bookname,press,category,new Date(),"","","");
             bookRepositoryMysql.save(p);
-        return p.toString();
+            return p.toString();
     }
 
     @RequestMapping(value = "/describe", method = RequestMethod.GET)
@@ -62,7 +62,7 @@ public class MysqlController {
             }
         }else{
             Long id =res.iterator().next().getId();
-            bookRepositoryMysql.lendBook(user,df.format(new Date()),id);
+            bookRepositoryMysql.loanBook(user,df.format(new Date()),id);
             try {
                 response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
             } catch (IOException e) {

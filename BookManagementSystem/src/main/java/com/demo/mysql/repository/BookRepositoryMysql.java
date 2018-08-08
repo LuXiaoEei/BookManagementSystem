@@ -26,7 +26,7 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
     @Modifying
     @Transactional(readOnly = false,rollbackFor = Exception.class)
     @Query(value = "update book set user=?1,lendtime=?2 where id =?3",nativeQuery = true)
-    Integer lendBook(String user,String datetime,Long id);
+    Integer loanBook(String user,String datetime,Long id);
 
     @Query(value = "select * from book where id=?1",nativeQuery = true)
     Collection<BookMysql> selectById(Long id);

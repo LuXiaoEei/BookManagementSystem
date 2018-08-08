@@ -22,7 +22,7 @@ public interface BookRepositoryGemfire extends CrudRepository<BookGemfire,String
 //    Collection<BookGemfire> getPersonsByEmailLike(String email);
 
     @Query("SELECT * FROM /BookGemfire limit $1")
-    Collection<BookGemfire> describle(int rows);
+    Collection<BookGemfire> describe(int rows);
 
     @Query("SELECT COUNT(*) FROM /BookGemfire")
     Integer countAll();
