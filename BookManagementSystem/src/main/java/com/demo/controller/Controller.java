@@ -80,7 +80,7 @@ public class Controller {
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
     }
@@ -100,7 +100,7 @@ public class Controller {
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
     }
@@ -116,7 +116,7 @@ public class Controller {
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
     }
@@ -132,7 +132,7 @@ public class Controller {
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
     }
@@ -153,7 +153,7 @@ public class Controller {
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
     }
@@ -210,7 +210,7 @@ public class Controller {
                     case "File":
                         return null;
                     default:
-                        response.getWriter().println("please choose the vaild database!");
+                        response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                         return null;
             }
         }
@@ -222,6 +222,7 @@ public class Controller {
                            HttpServletResponse response) throws ParseException, IOException {
         switch (datasource){
             case "Gemfire":
+                boolean tag=false;
                 Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(isbn);
                 for (BookGemfire element : result) {
                     if (element.getLoantime().equals("")) {
@@ -229,17 +230,20 @@ public class Controller {
                         element.setUser(user);
                         bookRepositoryGemfire.save(element);
                         response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
+                        tag=true;
                         break;
                     } else if (!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
                         element.setLoantime(df.format(new Date()));
                         element.setUser(user);
                         bookRepositoryGemfire.save(element);
                         response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
+                        tag=true;
                         break;
-                    } else
-                        continue;
+                    }
                 }
+                if (tag) break;
                 response.getWriter().println("no book remained");
+                break;
 
             case "Mysql":
                 Collection<BookMysql> res = bookRepositoryMysql.serachNoloanedBookByIsbn(isbn);
@@ -250,10 +254,12 @@ public class Controller {
                     bookRepositoryMysql.loanBook(user,df.format(new Date()),id);
                     response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
                 }
+                break;
             case "File":
+                break;
 //                return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
 //                return null;
         }
     }
@@ -279,10 +285,11 @@ public class Controller {
                     bookRepositoryMysql.returnBook(res.iterator().next().getId());
                     response.getWriter().println(user+" success returning isbn: "+ isbn +" at "+ df.format(new Date()));
                 }
+                return null;
             case "File":
                 return null;
             default:
-                response.getWriter().println("please choose the vaild database!");
+                response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
                 return null;
         }
 
