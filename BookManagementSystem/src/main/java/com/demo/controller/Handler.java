@@ -13,7 +13,7 @@ import java.util.Date;
 @ControllerAdvice
 @RestController
 public class Handler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class})
+    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class,InvaildIsbn.class})
     public final ResponseEntity<ErrorDetails> handleUserNotFoundException(PageNotFound ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false));

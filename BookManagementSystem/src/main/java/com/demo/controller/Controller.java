@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.demo.error.*;
@@ -36,6 +37,33 @@ public class Controller {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
+    private String isVaildIsbn(String isbn) throws InvaildIsbn {
+        String regex = "[^A-Za-z0-9]";
+        if (!Pattern.compile(regex).matcher(isbn).find()){
+            if(isbn.length()==12){
+                if (isbn.startsWith("978")){
+                    return isbn;
+                }else{
+                    throw new InvaildIsbn(isbn+"is not vaild");
+                }
+            }
+            if (isbn.length()==9){
+                return "978"+isbn;
+            }
+        }
+        throw new InvaildIsbn(isbn+"is not vaild");
+    }
+
+    private String isVaildId(String id ) throws IdError {
+        String regex = "[^0-9]";
+        if(Pattern.compile(regex).matcher(id).find()){
+            throw new IdError(id+"is not a vaild id");
+        }else{
+            return id;
+        }
+    }
+
+
     @RequestMapping(value = {"/**","/*"},method = RequestMethod.GET)
     public void noPageFind(HttpServletRequest request,HttpServletResponse response) throws IOException, PageNotFound {
         //response.getWriter().println("no page found: "+ request.getRequestURI()+" is not a vaild url!");
@@ -61,7 +89,7 @@ public class Controller {
                           @RequestParam(value = "bookname", required = true) String bookname,
                           @RequestParam(value = "category", required = false,defaultValue = "") String category,
                           @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
-                          HttpServletResponse response) throws IOException, IdError, PageNotFound, DatabaseError, IsbnNotFound {
+                          HttpServletResponse response) throws IOException, IdError, PageNotFound, DatabaseError, IsbnNotFound, InvaildIsbn {
         switch (datasource) {
             case "Gemfire":
                 if (id.equals("")){
@@ -72,11 +100,11 @@ public class Controller {
                     //response.getWriter().println("Error: in Gemfire model, you must input id!");
                     throw new IsbnNotFound("Error: isbn is needed");
                 }
-                BookGemfire bookGemfire = new BookGemfire(id, bookname, isbn, category, press, user, loantime, returntime, df.format(new Date()));
+                BookGemfire bookGemfire = new BookGemfire(isVaildId(id), bookname, isVaildIsbn(isbn), category, press, user, loantime, returntime, df.format(new Date()));
                 bookRepositoryGemfire.save(bookGemfire);
                 return bookGemfire.toString();
             case "Mysql":
-                BookMysql bookMysql = new BookMysql(isbn, bookname, press, category, new Date(), "", "", "");
+                BookMysql bookMysql = new BookMysql(isVaildIsbn(isbn), bookname, press, category, new Date(), "", "", "");
                 bookRepositoryMysql.save(bookMysql);
                 if (!id.equals("")){
                     response.getWriter().println("Warning: in Mysql model, your input id will not work, it will be automatic assigned !");
@@ -212,14 +240,19 @@ public class Controller {
                         return result;
 
                     case "Mysql":
-                        if (!StringUtils.isBlank(bookname))
+                        if (!StringUtils.isBlank(bookname)){
                             bookRepositoryMysql.updateBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname, datetime, condition);
-                        if (!StringUtils.isBlank(category))
+                        }
+                        if (!StringUtils.isBlank(category)){
                             bookRepositoryMysql.updateCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category, datetime, condition);
-                        if (!StringUtils.isBlank(press))
+                        }
+                        if (!StringUtils.isBlank(press)){
                             bookRepositoryMysql.updatePress((press.equals("''") | (press.equals("\"\""))) ? "" : press, datetime, condition);
-                        if (!StringUtils.isBlank(isbn)) bookRepositoryMysql.updateIsbn(isbn, datetime, condition);
-                        String tmpisbn = (StringUtils.isBlank(isbn)) ? condition : isbn;
+                        }
+                        if (!StringUtils.isBlank(isbn)) {
+                            bookRepositoryMysql.updateIsbn(isbn, datetime, condition);
+                        }
+                    String tmpisbn = (StringUtils.isBlank(isbn)) ? condition : isbn;
                         return bookRepositoryMysql.selectByIsbn(tmpisbn);
 
                     case "File":
