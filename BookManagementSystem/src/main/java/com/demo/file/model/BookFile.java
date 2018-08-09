@@ -31,8 +31,8 @@ public class BookFile {
             this.press=str[2];
             this.updatetime = str[4];
             this.user=str[5];
-            this.returntime=str[6];
-            this.loantime=str[7];
+            this.returntime=str[7];
+            this.loantime=str[6];
         }else{
             System.out.println("your input is invaild!");
         }

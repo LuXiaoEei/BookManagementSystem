@@ -316,22 +316,20 @@ public class Controller {
                 boolean flag= false;
                 if (!result.isEmpty()){
                     BookGemfire temp1=result.iterator().next();
-                    if (!temp1.getLoantime().equals("")) {
-                        if (temp1.getReturntime().equals(""))
-                            flag=true;
-                        else if(df.parse(temp1.getReturntime()).before(df.parse(temp1.getLoantime())))
-                            flag=false;
+                    if (!temp1.getLoantime().equals("") && temp1.getReturntime().equals("") || temp1.getReturntime().equals("")) {
+                        BookGemfire temp = result.iterator().next();
+                        temp.setUser(user);
+                        temp.setReturntime(df.format(new Date()));
+                        bookRepositoryGemfire.save(temp);
+                        response.getWriter().println(user + " success returning isbn: " + isbn + " at " + df.format(new Date()));
+                        flag=true;
+                        return null;
                     }
                 }
-                if (flag) {
-                    BookGemfire temp = result.iterator().next();
-                    temp.setUser(user);
-                    temp.setReturntime(df.format(new Date()));
-                    bookRepositoryGemfire.save(temp);
-                    response.getWriter().println(user + " success returning isbn: " + isbn + " at " + df.format(new Date()));
-                }else
+                if (!flag) {
                     response.getWriter().println("you have not borrowed the book");
-                return null;
+                    return null;
+                }
 
             case "Mysql":
                 Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
