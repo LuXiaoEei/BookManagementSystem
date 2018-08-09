@@ -1,9 +1,23 @@
 # BookManagementSystem
 
+### BookEntry
+
+- id: *String*, primary key ,it can't be set to empty;
+- bookname: *String*, the name of the book;
+- isbn: *String*, the ISBN or ASBN of the book, the length of this field in the datasource must be 12,
+and the length of vaild input value must be 9 or 12.
+- press: *String*, the publishing company of the book,
+- category: *String*, the category of the book, such as science or life...
+- user: *String*, the name of person who is borrowing the book now.
+- loantime: *String*, in Mysql, it is the time to borrow the books;Im Gemfire and File, if some one borrow the 
+book,it is also the time to borrow the books. If no one borrow the book, it is the time of the last 
+person to borrow books.
+- returntime: *String*, in Mysql, it is the time to return the books;Im Gemfire and File, it is the time to return the  books.
+- updatetime: *String*, it is the time to save the book or the time to change the basic info of the book.
 
 ### URL API
 
-### localhost:8080:
+### localhost:8080
 - Before running the server, please set the **datasource**  in the file named application.properties.the vaild 
  value includes *Gemfire,Mysql,File*. Also you can change your Mysql address and port
 in this file. for running the Gemfire correctly, you need run the Gemfire whose port is 10334 before
@@ -42,8 +56,7 @@ runing the server.
 6. **/select/user/{user}**
     - Used to find out which books a person has borrowed
     - User is required
-    - It will do accurate matching
-    
+    - It will do accurate matching    
 
 7. **/loadbook?user=&isbn=**
     - the user and isbn are required
@@ -52,7 +65,7 @@ runing the server.
     - Otherwise, it will update the user and lendtime fields in table. And return the prompt "user success borrowing isbn: isbn at loantime"
         1. In Mysql, if the user of the book is empty, we regard the book as a book that has not been borrowed.
         2. In Gemfire and File, if the loadtime is empyt or the loadtime is less than the returntime, we regard the book as a book that has not been borrowed.
-    
+
 8. **/returnbook?user=&isbn=**
     - the user and isbn are required.
     - Implement function which user return the book whose isbn is isbn

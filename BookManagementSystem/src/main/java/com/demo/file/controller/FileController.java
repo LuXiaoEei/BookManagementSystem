@@ -134,6 +134,7 @@ public class FileController {
                 break;
             }
         }
+        fileRepository.delete();
         for (BookFile element1:target1) {
             fileRepository.save(element1);
         }
@@ -152,6 +153,7 @@ public class FileController {
         temp.setUser(user);
         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         temp.setReturntime(df.format(new Date()));
+        fileRepository.delete();
         for (BookFile element1:target1) {
             fileRepository.save(element1);
         }
