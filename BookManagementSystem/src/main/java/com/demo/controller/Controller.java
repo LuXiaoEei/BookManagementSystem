@@ -14,6 +14,7 @@ import com.demo.mysql.repository.BookRepositoryMysql;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -41,6 +42,7 @@ public class Controller {
     }
 
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
         System.out.println("error: "+ex.getMessage());
         response.getWriter().printf("error: "+ex.getMessage());
@@ -225,14 +227,7 @@ public class Controller {
                 boolean tag=false;
                 Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(isbn);
                 for (BookGemfire element : result) {
-                    if (element.getLoantime().equals("")) {
-                        element.setLoantime(df.format(new Date()));
-                        element.setUser(user);
-                        bookRepositoryGemfire.save(element);
-                        response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
-                        tag=true;
-                        break;
-                    } else if (!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
+                    if (element.getLoantime().equals("")||!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
                         element.setLoantime(df.format(new Date()));
                         element.setUser(user);
                         bookRepositoryGemfire.save(element);
