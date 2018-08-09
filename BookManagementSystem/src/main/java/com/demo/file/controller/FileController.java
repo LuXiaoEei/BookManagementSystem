@@ -1,6 +1,8 @@
 package com.demo.file.controller;
 
 
+import com.demo.error.BooknameNotFound;
+import com.demo.error.IsbnNotFound;
 import com.demo.file.model.BookFile;
 import com.demo.file.repository.FileRepository;
 import com.demo.geode.model.BookGemfire;
@@ -91,16 +93,24 @@ public class FileController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
-    public BookFile updateBook(@RequestParam(value = "press", required = false) String press,
+    public ArrayList<BookFile> updateBook(@RequestParam(value = "press", required = false) String press,
                              @RequestParam(value = "category", required = false,defaultValue = "") String category,
                              @RequestParam(value = "bookname", required = false) String bookname,
                              @RequestParam(value = "isbn", required = false) String isbn,
                              @RequestParam(value = "condition", required = true) String condition,
-                             HttpServletResponse response) throws IOException {
+                             HttpServletResponse response) throws IOException, IsbnNotFound, BooknameNotFound {
         Collection<BookFile> allcontent = fileRepository.readFileSource().values();
-        BookFile bookFile = new BookFile();
+        ArrayList<BookFile> bookFile = new ArrayList<BookFile>();
+        if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
+            response.getWriter().println("don't set the isbn to null");
+            throw new IsbnNotFound("isbn should be set validly");
+        }
+        if (!StringUtils.isBlank(bookname) &&bookname.equals ("")|((bookname.equals("''") | (bookname.equals("\"\""))))) {
+            response.getWriter().println("don't set the bookname to null");
+            throw new BooknameNotFound("bookname should be set validly");
+        }
         for (BookFile element:allcontent) {
-            if(element.getIsbn().equals(isbn)){
+            if(element.getIsbn().equals(condition)){
                 if (!StringUtils.isBlank(bookname))
                     element.setBookname(bookname);
                 if (!StringUtils.isBlank(press))
@@ -111,7 +121,7 @@ public class FileController {
                         element.setIsbn(isbn);
                 String datetime = df.format(new Date());
                 element.setUpdatetime(datetime);
-                bookFile=element;
+                bookFile.add(element);
             }
         }
         fileRepository.delete();
@@ -125,23 +135,31 @@ public class FileController {
                          @RequestParam(value = "user", required = true) String user,
                          HttpServletResponse response) throws IOException, ParseException {
         Collection<BookFile> allcontent = fileRepository.readFileSource().values();
-        Collection<BookFile> target1=allcontent.stream().filter(x->!(x.getIsbn().equals(isbn)&&x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
-        Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)&&x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        Collection<BookFile> target1=allcontent.stream().filter(x->!(x.getIsbn().equals(isbn))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        boolean flag=false;
         for (BookFile element : target) {
             if (element.getLoantime().equals("")||!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
                 element.setLoantime(df.format(new Date()));
                 element.setUser(user);
+                System.out.println("sucess borrow the book");
+                flag=true;
                 break;
             }
         }
-        fileRepository.delete();
-        for (BookFile element1:target1) {
-            fileRepository.save(element1);
+        if (!flag) {
+            return "Sorry, the book has been loaned";
         }
-        for (BookFile element:target) {
-            fileRepository.save(element);
+        else {
+            fileRepository.delete();
+            for (BookFile element1:target1) {
+                fileRepository.save(element1);
+            }
+            for (BookFile element:target) {
+                fileRepository.save(element);
+            }
+            return "sucess borrow the book";
         }
-        return "Sorry, the book has been loaned";
     }
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public String returnBook(@RequestParam(value = "isbn", required = true) String isbn,

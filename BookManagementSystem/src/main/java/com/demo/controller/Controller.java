@@ -175,10 +175,10 @@ public class Controller {
                           @RequestParam(value = "isbn", required = false) String isbn,
                           @RequestParam(value = "condition", required = true) String condition,
                             HttpServletResponse response) throws IOException, IsbnNotFound, DatabaseError, BooknameNotFound {
-            if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
-                response.getWriter().println("don't set the isbn to null");
-                throw new IsbnNotFound("isbn should be set validly");
-            }
+        if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
+            response.getWriter().println("don't set the isbn to null");
+            throw new IsbnNotFound("isbn should be set validly");
+        }
         if (!StringUtils.isBlank(bookname) &&bookname.equals ("")|((bookname.equals("''") | (bookname.equals("\"\""))))) {
             response.getWriter().println("don't set the bookname to null");
             throw new BooknameNotFound("bookname should be set validly");
