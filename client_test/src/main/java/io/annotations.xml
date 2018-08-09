@@ -1,0 +1,5 @@
+<root>
+    <item name='java.io.InputStreamReader boolean ready()'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>
