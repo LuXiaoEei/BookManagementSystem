@@ -4,6 +4,7 @@ package com.demo.file.controller;
 import com.demo.file.model.BookFile;
 import com.demo.file.repository.FileRepository;
 import com.demo.geode.model.BookGemfire;
+import com.demo.geode.repository.BookRepositoryGemfire;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -16,6 +17,7 @@ import  java.io.*;
 import java.lang.System;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -118,7 +120,44 @@ public class FileController {
         }
         return bookFile;
     }
-
+    @RequestMapping(value = "/loanbook", method = RequestMethod.GET)
+    public String loanBook(@RequestParam(value = "isbn", required = true) String isbn,
+                         @RequestParam(value = "user", required = true) String user,
+                         HttpServletResponse response) throws IOException, ParseException {
+        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> target1=allcontent.stream().filter(x->!(x.getIsbn().equals(isbn)&&x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)&&x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        for (BookFile element : target) {
+            if (element.getLoantime().equals("")||!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
+                element.setLoantime(df.format(new Date()));
+                element.setUser(user);
+                break;
+            }
+        }
+        for (BookFile element1:target1) {
+            fileRepository.save(element1);
+        }
+        for (BookFile element:target) {
+            fileRepository.save(element);
+        }
+        return "Sorry, the book has been loaned";
+    }
+    @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
+    public String returnBook(@RequestParam(value = "isbn", required = true) String isbn,
+                                              @RequestParam(value = "user", required = true) String user) throws ParseException, IOException {
+        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> target1=allcontent.stream().filter(x->!(x.getIsbn().equals(isbn)&&x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)&&x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        BookFile temp=target.iterator().next();
+        temp.setUser(user);
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        temp.setReturntime(df.format(new Date()));
+        for (BookFile element1:target1) {
+            fileRepository.save(element1);
+        }
+        fileRepository.save(temp);
+        return temp.toString();
+    }
 
 
 

@@ -105,18 +105,12 @@ public class GemfireController {
         Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(isbn);
         for (BookGemfire element : result) {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            if (element.getLoantime().equals("")) {
+            if (element.getLoantime().equals("")||!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
                 element.setLoantime(df.format(new Date()));
                 element.setUser(user);
                 bookRepositoryGemfire.save(element);
                 return element.toString();
-            } else if (!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
-                element.setLoantime(df.format(new Date()));
-                element.setUser(user);
-                bookRepositoryGemfire.save(element);
-                return element.toString();
-            } else
-                continue;
+            }
         }
         return "Sorry, the book has been loaned";
     }
