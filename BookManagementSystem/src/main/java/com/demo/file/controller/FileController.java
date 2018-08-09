@@ -3,7 +3,10 @@ package com.demo.file.controller;
 
 import com.demo.file.model.BookFile;
 import com.demo.file.repository.FileRepository;
+import com.demo.geode.model.BookGemfire;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +30,7 @@ public class FileController {
     private Path rootpath = Paths.get("", "src","main","java","com","demo","file","date");
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
         System.out.println("error: "+ex.getMessage());
         response.getWriter().printf("error: "+ex.getMessage());
@@ -72,6 +75,48 @@ public class FileController {
         Collection<BookFile> allcontent = fileRepository.readFileSource().values();
 //        allcontent.forEach(x->System.out.println(x.getBookname()));
         return allcontent.stream().filter(x->x.getBookname().contains(bookname)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+    }
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public ArrayList<BookFile> deleteBook(@RequestParam(value = "isbn", required = true) String isbn,
+                             HttpServletResponse response) throws IOException {
+        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> target=allcontent.stream().filter(x->!x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        fileRepository.delete();
+        for (BookFile element:target) {
+            fileRepository.save(element);
+        }
+        return allcontent.stream().filter(x->x.getUser().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    public BookFile updateBook(@RequestParam(value = "press", required = false) String press,
+                             @RequestParam(value = "category", required = false,defaultValue = "") String category,
+                             @RequestParam(value = "bookname", required = false) String bookname,
+                             @RequestParam(value = "isbn", required = false) String isbn,
+                             @RequestParam(value = "condition", required = true) String condition,
+                             HttpServletResponse response) throws IOException {
+        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        BookFile bookFile = new BookFile();
+        for (BookFile element:allcontent) {
+            if(element.getIsbn().equals(isbn)){
+                if (!StringUtils.isBlank(bookname))
+                    element.setBookname(bookname);
+                if (!StringUtils.isBlank(press))
+                    element.setPress((press.equals("''") | (press.equals("\"\""))) ? "" : press);
+                if (!StringUtils.isBlank(category))
+                        element.setCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category);
+                if (!StringUtils.isBlank(isbn))
+                        element.setIsbn(isbn);
+                String datetime = df.format(new Date());
+                element.setUpdatetime(datetime);
+                bookFile=element;
+            }
+        }
+        fileRepository.delete();
+        for (BookFile element:allcontent) {
+            fileRepository.save(element);
+        }
+        return bookFile;
     }
 
 

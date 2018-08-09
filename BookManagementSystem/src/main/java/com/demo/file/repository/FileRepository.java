@@ -1,6 +1,7 @@
 package com.demo.file.repository;
 
 import com.demo.file.model.BookFile;
+import com.demo.geode.model.BookGemfire;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
@@ -51,7 +52,11 @@ public class FileRepository {
         filesource.close();
         return bookFile;
     }
-
+    public void delete(){
+        File file =new File(filepath.toString());
+        if(file.exists() && file.isFile())
+            file.delete();
+    }
 
 
 
