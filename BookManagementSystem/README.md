@@ -2,10 +2,12 @@
 
 ### BookEntry
 
-- id: *String*, primary key ,it can't be set to empty;
+- id: *String*, primary key ,it can't be set to empty, the vaild id must
+ only contain numbers;
 - bookname: *String*, the name of the book;
 - isbn: *String*, the ISBN or ASBN of the book, the length of this field in the datasource must be 12,
-and the length of vaild input value must be 9 or 12.
+and the length of vaild input value must be 9 or 12, and only contain numbers and letters. If the length is 12,
+the first three characters must be **978**.  
 - press: *String*, the publishing company of the book,
 - category: *String*, the category of the book, such as science or life...
 - user: *String*, the name of person who is borrowing the book now.

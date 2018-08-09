@@ -37,21 +37,21 @@ public class Controller {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    private String isVaildIsbn(String isbn) throws InvaildIsbn {
+    private String isVaildIsbn(String isbn) throws  IsbnNotFound {
         String regex = "[^A-Za-z0-9]";
         if (!Pattern.compile(regex).matcher(isbn).find()){
             if(isbn.length()==12){
                 if (isbn.startsWith("978")){
                     return isbn;
                 }else{
-                    throw new InvaildIsbn(isbn+"is not vaild");
+                    throw new IsbnNotFound(isbn+"is not vaild");
                 }
             }
             if (isbn.length()==9){
                 return "978"+isbn;
             }
         }
-        throw new InvaildIsbn(isbn+"is not vaild");
+        throw new IsbnNotFound(isbn+"is not vaild");
     }
 
     private String isVaildId(String id ) throws IdError {
@@ -89,7 +89,7 @@ public class Controller {
                           @RequestParam(value = "bookname", required = true) String bookname,
                           @RequestParam(value = "category", required = false,defaultValue = "") String category,
                           @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
-                          HttpServletResponse response) throws IOException, IdError, PageNotFound, DatabaseError, IsbnNotFound, InvaildIsbn {
+                          HttpServletResponse response) throws IOException, IdError, PageNotFound, DatabaseError, IsbnNotFound {
         switch (datasource) {
             case "Gemfire":
                 if (id.equals("")){
