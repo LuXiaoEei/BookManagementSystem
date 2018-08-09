@@ -87,7 +87,7 @@ public class FileController {
         for (BookFile element:target) {
             fileRepository.save(element);
         }
-        return allcontent.stream().filter(x->x.getUser().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        return allcontent.stream().filter(x->x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)

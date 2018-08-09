@@ -37,6 +37,7 @@ public class FileRepository {
                 break;
             }
         }
+        br.close();
         return allcontent;
     }
 
