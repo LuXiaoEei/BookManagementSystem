@@ -139,10 +139,9 @@ public class FileController {
         Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         boolean flag=false;
         for (BookFile element : target) {
-            if (element.getLoantime().equals("")||!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime()))) {
+            if (element.getLoantime().equals("")||(!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime())))){
                 element.setLoantime(df.format(new Date()));
                 element.setUser(user);
-                System.out.println("sucess borrow the book");
                 flag=true;
                 break;
             }
@@ -158,6 +157,7 @@ public class FileController {
             for (BookFile element:target) {
                 fileRepository.save(element);
             }
+            System.out.println("sucess borrow the book");
             return "sucess borrow the book";
         }
     }
@@ -167,16 +167,19 @@ public class FileController {
         Collection<BookFile> allcontent = fileRepository.readFileSource().values();
         Collection<BookFile> target1=allcontent.stream().filter(x->!(x.getIsbn().equals(isbn)&&x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         Collection<BookFile> target=allcontent.stream().filter(x->x.getIsbn().equals(isbn)&&x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
-        BookFile temp=target.iterator().next();
-        temp.setUser(user);
-        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        temp.setReturntime(df.format(new Date()));
-        fileRepository.delete();
-        for (BookFile element1:target1) {
-            fileRepository.save(element1);
-        }
-        fileRepository.save(temp);
-        return temp.toString();
+        if(!target.isEmpty()) {
+            BookFile temp = target.iterator().next();
+            temp.setUser(user);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            temp.setReturntime(df.format(new Date()));
+            fileRepository.delete();
+            for (BookFile element1 : target1) {
+                fileRepository.save(element1);
+            }
+            fileRepository.save(temp);
+            return temp.toString();
+        }else
+            return  "No books need to be return!";
     }
 
 
