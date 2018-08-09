@@ -7,6 +7,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import com.demo.error.DatabaseError;
+import com.demo.error.IdError;
+import com.demo.error.IsbnNotFound;
+import com.demo.error.PageNotFound;
 import com.demo.geode.model.BookGemfire;
 import com.demo.geode.repository.BookRepositoryGemfire;
 import com.demo.mysql.model.BookMysql;
@@ -17,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.*;
 
 @RestController
@@ -36,18 +39,20 @@ public class Controller {
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @RequestMapping(value = {"/**","/*"},method = RequestMethod.GET)
-    public void noPageFind(HttpServletRequest request,HttpServletResponse response) throws IOException {
-        response.getWriter().println("no page found: "+ request.getRequestURI()+" is not a vaild url!");
+    public void noPageFind(HttpServletRequest request,HttpServletResponse response) throws IOException, PageNotFound {
+        //response.getWriter().println("no page found: "+ request.getRequestURI()+" is not a vaild url!");
+
         System.out.println("error: no page found: "+ request.getRequestURI()+" is not a vaild url!");
+        throw new PageNotFound("Error: invalid url; Page not found!");
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
-        System.out.println("error: "+ex.getMessage());
-        response.getWriter().printf("error: "+ex.getMessage());
-        response.flushBuffer();
-    }
+//    @ExceptionHandler(Exception.class)
+//    //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
+//        System.out.println("error: "+ex.getMessage());
+//        response.getWriter().printf("error: "+ex.getMessage());
+//        response.flushBuffer();
+//    }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String addBook(@RequestParam(value = "id", required = false,defaultValue = "") String id,
@@ -58,12 +63,12 @@ public class Controller {
                           @RequestParam(value = "bookname", required = true) String bookname,
                           @RequestParam(value = "category", required = false,defaultValue = "") String category,
                           @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
-                          HttpServletResponse response) throws IOException {
+                          HttpServletResponse response) throws IOException, IdError, PageNotFound, DatabaseError {
         switch (datasource) {
             case "Gemfire":
                 if (id.equals("")){
-                    response.getWriter().println("Error: in Gemfire model, you must input id!");
-                    return null;
+                    //response.getWriter().println("Error: in Gemfire model, you must input id!");
+                    throw new IdError("Error: in Gemfire model, you must input id!");
                 }
                 BookGemfire bookGemfire = new BookGemfire(id, bookname, isbn, category, press, user, loantime, returntime, df.format(new Date()));
                 bookRepositoryGemfire.save(bookGemfire);
@@ -75,6 +80,7 @@ public class Controller {
                     response.getWriter().println("Warning: in Mysql model, your input id will not work, it will be automatic assigned !");
                     response.getWriter().println("<br/>");
                     response.getWriter().println(bookMysql.toString());
+                    throw new IdError("Error: in Gemfire model, you must input id!");
 //                    response.flushBuffer();
                 }else{
                     return bookMysql.toString();
@@ -83,13 +89,13 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Object deleteBook(@RequestParam(value = "isbn", required = true) String isbn,
-                             HttpServletResponse response) throws IOException {
+                             HttpServletResponse response) throws IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 Collection<BookGemfire> result =bookRepositoryGemfire.findByIsbn(isbn);
@@ -103,13 +109,13 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
     @RequestMapping(value = "/select/bookname/{bookname}", method = RequestMethod.GET)
     public Object findBook(@PathVariable(required = true) String bookname,
-                           HttpServletResponse response) throws IOException {
+                           HttpServletResponse response) throws IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 return bookRepositoryGemfire.findByBooknameLike("%"+bookname+"%");
@@ -119,13 +125,13 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
     @RequestMapping(value = "/select/user/{user}", method = RequestMethod.GET)
     public Object findUser(@PathVariable(required = true) String user,
-                           HttpServletResponse response) throws IOException {
+                           HttpServletResponse response) throws IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 return bookRepositoryGemfire.findByUser(user);
@@ -135,7 +141,7 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
@@ -143,7 +149,7 @@ public class Controller {
     public  Object describeBook(
             @RequestParam(value = "start", required = false,defaultValue = "0") String start,
             @RequestParam(value = "nums", required = false,defaultValue = "all") String nums,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response) throws IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 int num1 = (nums.equals("all"))?-1:Integer.valueOf(nums);
@@ -156,7 +162,7 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
@@ -166,10 +172,10 @@ public class Controller {
                           @RequestParam(value = "bookname", required = false) String bookname,
                           @RequestParam(value = "isbn", required = false) String isbn,
                           @RequestParam(value = "condition", required = true) String condition,
-                            HttpServletResponse response) throws IOException {
-            if (!StringUtils.isBlank(isbn) && ((isbn.equals("''") | (isbn.equals("\"\""))))) {
+                            HttpServletResponse response) throws IOException, IsbnNotFound, DatabaseError {
+            if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
                 response.getWriter().println("don't set the isbn to null");
-                return null;
+                throw new IsbnNotFound("isbn should be set validly");
             } else {
                 String datetime = df.format(new Date());
                 switch (datasource) {
@@ -213,7 +219,7 @@ public class Controller {
                         return null;
                     default:
                         response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                        return null;
+                        throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
             }
         }
     }
@@ -221,7 +227,7 @@ public class Controller {
     @RequestMapping(value = "/loanbook", method = RequestMethod.GET)
     public void loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                            @RequestParam(value = "user", required = true) String user,
-                           HttpServletResponse response) throws ParseException, IOException {
+                           HttpServletResponse response) throws ParseException, IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 boolean tag=false;
@@ -255,14 +261,14 @@ public class Controller {
 //                return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-//                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
     }
 
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public Object returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                                               @RequestParam(value = "user", required = true) String user,
-                                              HttpServletResponse response) throws ParseException, IOException {
+                                              HttpServletResponse response) throws ParseException, IOException, DatabaseError {
         switch (datasource){
             case "Gemfire":
                 Collection<BookGemfire> result =bookRepositoryGemfire.describe(-1);
@@ -300,7 +306,7 @@ public class Controller {
                 return null;
             default:
                 response.getWriter().println("please choose the vaild database,it support Gemife/Mysql/File!");
-                return null;
+                throw new DatabaseError("please choose the vaild database,it support Gemife/Mysql/File!");
         }
 
 
