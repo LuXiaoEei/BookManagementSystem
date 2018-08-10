@@ -11,7 +11,7 @@ public interface Server {
 
     public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response);
 
-    public Object describeBook(int starts,int num,HttpServletResponse response);
+    public Object describeBook(String start, String nums,HttpServletResponse response);
 
     public Object selectByBooknameLike(String bookname,HttpServletResponse response);
 
