@@ -67,6 +67,11 @@ public class ServiceMysql implements Service {
     }
 
     @Override
+    public Integer countAll(){
+        return bookRepositoryMysql.countAll();
+    }
+
+    @Override
     public Object describeBook(String start, String nums, HttpServletResponse response) {
         int starts = Integer.valueOf(start);
         int num = (nums.equals("all"))?bookRepositoryMysql.countAll():Integer.valueOf(nums);

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,8 +21,10 @@ import java.util.stream.Collectors;
 @org.springframework.stereotype.Service()
 @Qualifier("serviceGemfire")
 public class ServiceGemfire implements Service {
+
     @Autowired
     private BookRepositoryGemfire bookRepositoryGemfire;
+
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Override
@@ -83,6 +86,11 @@ public class ServiceGemfire implements Service {
             }
         bookRepositoryGemfire.saveAll(result);
         return result;
+    }
+
+    @Override
+    public Integer countAll(){
+       return bookRepositoryGemfire.countAll();
     }
 
     @Override

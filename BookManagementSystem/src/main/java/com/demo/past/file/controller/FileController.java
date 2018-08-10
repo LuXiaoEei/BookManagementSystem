@@ -4,7 +4,7 @@ package com.demo.past.file.controller;
 import com.demo.exception.BooknameNotFound;
 import com.demo.exception.IsbnNotFound;
 import com.demo.model.BookFile;
-import com.demo.repository.FileRepository;
+import com.demo.repository.BookRepositoryFile;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/0" ,method = RequestMethod.GET)
 public class FileController {
     @Autowired
-    FileRepository fileRepository;
+    BookRepositoryFile bookRepositoryFile;
 
     @Value("${datasource}")
     static String datasource;
@@ -51,14 +51,14 @@ public class FileController {
                             HttpServletResponse response) throws IOException {
 
         BookFile bookFile = new BookFile(id, isbn, bookname, category, press, df.format(new Date()), "", "", "");
-        return fileRepository.save(bookFile);
+        return bookRepositoryFile.save(bookFile);
     }
 
     @RequestMapping(value = "/describe", method = RequestMethod.GET)
     public ArrayList<BookFile> describe(@RequestParam(value = "start", required = false, defaultValue = "0") int start,
                                         @RequestParam(value = "nums", required = false, defaultValue = "all") String nums
     ) throws IOException {
-        HashMap<Integer, BookFile> allcontent = fileRepository.readFileSource();
+        HashMap<Integer, BookFile> allcontent = bookRepositoryFile.readFileSource();
         ArrayList<BookFile> result = new ArrayList<BookFile>();
         Integer end = ((nums.equals("all")) ? allcontent.keySet().size() : Integer.valueOf(nums)) + start;
         for (Integer i = start; i < end; i++) {
@@ -71,13 +71,13 @@ public class FileController {
 
     @RequestMapping(value = "/select/user/{user}", method = RequestMethod.GET)
     public ArrayList<BookFile> findByUser(@PathVariable(required = true) String user) throws IOException {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         return allcontent.stream().filter(x -> x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
     }
 
     @RequestMapping(value = "/select/bookname/{bookname}", method = RequestMethod.GET)
     public ArrayList<BookFile> findByBookname(@PathVariable(required = true) String bookname) throws IOException {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
 //        allcontent.forEach(x->System.out.println(x.getBookname()));
         return allcontent.stream().filter(x -> x.getBookname().contains(bookname)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
     }
@@ -85,11 +85,11 @@ public class FileController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public ArrayList<BookFile> deleteBook(@RequestParam(value = "isbn", required = true) String isbn,
                                           HttpServletResponse response) throws IOException {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         Collection<BookFile> target = allcontent.stream().filter(x -> !x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
-        fileRepository.delete();
+        bookRepositoryFile.delete();
         for (BookFile element : target) {
-            fileRepository.save(element);
+            bookRepositoryFile.save(element);
         }
         return allcontent.stream().filter(x -> x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
     }
@@ -101,7 +101,7 @@ public class FileController {
                                           @RequestParam(value = "isbn", required = false) String isbn,
                                           @RequestParam(value = "condition", required = true) String condition,
                                           HttpServletResponse response) throws IOException, IsbnNotFound, BooknameNotFound {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         ArrayList<BookFile> bookFile = new ArrayList<BookFile>();
         if (!StringUtils.isBlank(isbn) && isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
             response.getWriter().println("don't set the isbn to null");
@@ -126,9 +126,9 @@ public class FileController {
                 bookFile.add(element);
             }
         }
-        fileRepository.delete();
+        bookRepositoryFile.delete();
         for (BookFile element : allcontent) {
-            fileRepository.save(element);
+            bookRepositoryFile.save(element);
         }
         return bookFile;
     }
@@ -137,7 +137,7 @@ public class FileController {
     public String loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                            @RequestParam(value = "user", required = true) String user,
                            HttpServletResponse response) throws IOException, ParseException {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         Collection<BookFile> target1 = allcontent.stream().filter(x -> !(x.getIsbn().equals(isbn))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         Collection<BookFile> target = allcontent.stream().filter(x -> x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         boolean flag = false;
@@ -152,12 +152,12 @@ public class FileController {
         if (!flag) {
             return "Sorry, the book has been loaned";
         } else {
-            fileRepository.delete();
+            bookRepositoryFile.delete();
             for (BookFile element1 : target1) {
-                fileRepository.save(element1);
+                bookRepositoryFile.save(element1);
             }
             for (BookFile element : target) {
-                fileRepository.save(element);
+                bookRepositoryFile.save(element);
             }
             System.out.println("sucess borrow the book");
             return "sucess borrow the book";
@@ -167,7 +167,7 @@ public class FileController {
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public String  returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                               @RequestParam(value = "user", required = true) String user) throws ParseException, IOException {
-        Collection<BookFile> allcontent = fileRepository.readFileSource().values();
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         Collection<BookFile> target1 = allcontent.stream().filter(x -> !(x.getIsbn().equals(isbn) && x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         Collection<BookFile> target = allcontent.stream().filter(x -> x.getIsbn().equals(isbn) && x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         BookFile temp=new BookFile();
@@ -178,12 +178,12 @@ public class FileController {
                     temp.setUser(user);
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     temp.setReturntime(df.format(new Date()));
-                    fileRepository.delete();
+                    bookRepositoryFile.delete();
                     for (BookFile element1 : target1) {
-                        fileRepository.save(element1);
+                        bookRepositoryFile.save(element1);
                     }
                     for (BookFile element : target) {
-                        fileRepository.save(element);
+                        bookRepositoryFile.save(element);
                     }
                     return temp.toString();
                 }

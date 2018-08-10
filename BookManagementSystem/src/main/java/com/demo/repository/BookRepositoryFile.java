@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 @Repository
-public class FileRepository {
+public class BookRepositoryFile {
 
     private Path filepath = Paths.get("", "src","main","java","com","demo","filesource.txt");
 

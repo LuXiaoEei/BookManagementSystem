@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import com.demo.exception.*;
 import com.demo.service.Service;
+import com.demo.service.ServiceFile;
+import com.demo.service.ServiceMysql;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,14 +26,22 @@ import javax.servlet.http.*;
 public class Controller{
 
     @Value("${datasource}")
-    private String datasource;
+    static String datasource;
 
 //    private String a=datasource;
 
     @Autowired
-    @Qualifier("serviceMysql")
-    Service service;
+    @Qualifier("serviceFile")
+    private  Service service;
+//    private String datasource;
 
+//    @Autowired
+//   public Controller(Help help){
+//       if(help.getDatasource().equals("serviceMysql")){
+//           this.service=new ServiceMysql();
+//           this.datasource=help.getDatasource();
+//       }
+//   }
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
@@ -73,7 +83,7 @@ public class Controller{
 
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class,MissingServletRequestParameterException.class, NoSuchFieldException.class})
+    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class, NoSuchFieldException.class})
     public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) {
         System.out.println("======================================================");
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
@@ -82,6 +92,27 @@ public class Controller{
         System.out.println("======================================================");
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @RequestMapping(value = "/info",method = RequestMethod.GET)
+    public void getInfo(HttpServletResponse response) throws IOException {
+        response.getWriter().println("The datasource used now is "+datasource.replace("service","")+";");
+        response.getWriter().println("<br/>");
+        response.getWriter().println("The amount of data in the database is "+ service.countAll()+";");
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public Object addBookPost(@RequestParam(value = "id", required = false,defaultValue = "") String id,
+                          @RequestParam(value = "isbn", required = true) String isbn,
+                          @RequestParam(value = "press", required = false,defaultValue = "") String press,
+                          @RequestParam(value = "user", required = false,defaultValue = "") String user,
+                          @RequestParam(value = "loantime", required = false,defaultValue = "") String loantime,
+                          @RequestParam(value = "bookname", required = true) String bookname,
+                          @RequestParam(value = "category", required = false,defaultValue = "") String category,
+                          @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
+                          HttpServletResponse response) throws IOException, IdError, IsbnNotFound {
+        return service.addbook(isVaildId(id),bookname,isVaildIsbn(isbn),category,press,user,loantime,returntime,df.format(new Date()),response);
+    }
+
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public Object addBook(@RequestParam(value = "id", required = false,defaultValue = "") String id,
@@ -147,26 +178,4 @@ public class Controller{
         return service.returnbookByUserAndIsbn(user,isVaildIsbn(isbn),response);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

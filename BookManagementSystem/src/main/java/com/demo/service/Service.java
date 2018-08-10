@@ -15,6 +15,8 @@ public interface Service {
 
     public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IsbnNotFound, BooknameNotFound, IOException;
 
+    public Integer countAll() throws IOException;
+
     public Object describeBook(String start, String nums,HttpServletResponse response) throws IOException;
 
     public Object selectByBooknameLike(String bookname,HttpServletResponse response) throws IOException;
