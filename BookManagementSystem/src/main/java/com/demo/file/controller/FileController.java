@@ -164,24 +164,29 @@ public class FileController {
     }
 
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
-    public String returnBook(@RequestParam(value = "isbn", required = true) String isbn,
-                             @RequestParam(value = "user", required = true) String user) throws ParseException, IOException {
+    public String  returnBook(@RequestParam(value = "isbn", required = true) String isbn,
+                              @RequestParam(value = "user", required = true) String user) throws ParseException, IOException {
         Collection<BookFile> allcontent = fileRepository.readFileSource().values();
         Collection<BookFile> target1 = allcontent.stream().filter(x -> !(x.getIsbn().equals(isbn) && x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         Collection<BookFile> target = allcontent.stream().filter(x -> x.getIsbn().equals(isbn) && x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+        BookFile temp=new BookFile();
         if (!target.isEmpty()){
-            BookFile temp1 = target.iterator().next();
-            if (!temp1.getLoantime().equals("") && temp1.getReturntime().equals("") || temp1.getReturntime().equals("")) {
-                BookFile temp = target.iterator().next();
-                temp.setUser(user);
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                temp.setReturntime(df.format(new Date()));
-                fileRepository.delete();
-                for (BookFile element1 : target1) {
-                    fileRepository.save(element1);
+            for (BookFile temp1:target){
+                if (!temp1.getLoantime().equals("") && temp1.getReturntime().equals("") || df.parse(temp1.getReturntime()).before(df.parse(temp1.getLoantime()))) {
+                    temp = temp1;
+                    temp.setUser(user);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    temp.setReturntime(df.format(new Date()));
+                    fileRepository.delete();
+                    for (BookFile element1 : target1) {
+                        fileRepository.save(element1);
+                    }
+                    for (BookFile element : target) {
+                        fileRepository.save(element);
+                    }
+                    return temp.toString();
                 }
-                fileRepository.save(temp);
-                return temp.toString(); }
+            }
         }
         return "No books need to be return!";
     }
