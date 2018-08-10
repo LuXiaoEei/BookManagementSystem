@@ -1,22 +1,25 @@
-package com.demo.controller;
-import com.demo.exception.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.Date;
-
-@ControllerAdvice
-@RestController
-public class Handler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class})
-    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(PageNotFound ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
-                request.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-}
+//package com.demo.controller;
+//import com.demo.exception.*;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.MissingServletRequestParameterException;
+//import org.springframework.web.bind.annotation.ControllerAdvice;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.context.request.WebRequest;
+//import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+//
+//import java.util.Date;
+//
+//@ControllerAdvice
+//@RestController
+//public class Handler extends ResponseEntityExceptionHandler {
+//    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class,MissingServletRequestParameterException.class, NoSuchFieldException.class})
+//    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) {
+//        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+//                request.getDescription(false));
+//        System.out.println(ex.getMessage());
+//        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++==");
+//        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//}

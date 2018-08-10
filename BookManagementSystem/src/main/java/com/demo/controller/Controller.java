@@ -11,8 +11,11 @@ import com.demo.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.*;
 
@@ -20,12 +23,13 @@ import javax.servlet.http.*;
 
 public class Controller{
 
-    @Value("${datasource}")  private String datasource;
+    @Value("${datasource}")
+    private String datasource;
 
 //    private String a=datasource;
 
     @Autowired
-    @Qualifier("serviceFile")
+    @Qualifier("serviceMysql")
     Service service;
 
 
@@ -66,11 +70,17 @@ public class Controller{
         throw new PageNotFound("Error: invalid url: "+request.getRequestURI()+" ; Page not found!");
     }
 
-    @ExceptionHandler({MissingServletRequestParameterException.class, NoSuchFieldException.class})
-    public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
-        System.out.println("exception: "+ex.getMessage());
-        response.getWriter().printf("exception: "+ex.getMessage());
-        response.flushBuffer();
+
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class,MissingServletRequestParameterException.class, NoSuchFieldException.class})
+    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) {
+        System.out.println("======================================================");
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
+                request.getDescription(false));
+        System.out.println(ex.getMessage());
+        System.out.println("======================================================");
+        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)

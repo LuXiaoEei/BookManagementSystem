@@ -1,6 +1,7 @@
 package com.demo.service;
 
 import com.demo.exception.BooknameNotFound;
+import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 import com.demo.model.BookFile;
 import com.demo.repository.FileRepository;
@@ -31,7 +32,15 @@ public class ServiceFile implements Service {
     FileRepository fileRepository;
 
     @Override
-    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException {
+    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound {
+        if (id.equals("")) {
+            //response.getWriter().println("Error: in Gemfire model, you must input id!");
+            throw new IdError("Error: you must input id!");
+        }
+        if (isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
+            //response.getWriter().println("Error: in Gemfire model, you must input id!");
+            throw new IsbnNotFound("Error: isbn is needed");
+        }
         BookFile bookFile = new BookFile(id, isbn, bookname, category, press, df.format(new Date()), "", "", "");
         return fileRepository.save(bookFile);
     }
