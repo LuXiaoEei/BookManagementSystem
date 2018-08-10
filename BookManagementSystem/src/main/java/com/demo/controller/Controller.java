@@ -32,8 +32,10 @@ public class Controller{
     @Value("${datasource}")
     static String datasource;
 
+//    private String a=datasource;
+
     @Autowired
-    @Qualifier("Mysql")
+    @Qualifier("File")
     Server server;
 
 
@@ -58,6 +60,7 @@ public class Controller{
     }
 
     private String isVaildId(String id ) throws IdError {
+        if (id==null) return null;
         String regex = "[^0-9]";
         if(Pattern.compile(regex).matcher(id).find()){
             throw new IdError("id: "+id+" is not a vaild id");
@@ -140,7 +143,7 @@ public class Controller{
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public Object returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                              @RequestParam(value = "user", required = true) String user,
-                             HttpServletResponse response) throws IOException, IsbnNotFound {
+                             HttpServletResponse response) throws IOException, IsbnNotFound, ParseException {
         return server.returnbookByUserAndIsbn(user,isVaildIsbn(isbn),response);
 
     }

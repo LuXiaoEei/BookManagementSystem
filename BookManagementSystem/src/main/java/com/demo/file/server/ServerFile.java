@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-@Service("file")
+@Service("File")
 public class ServerFile implements Server {
     private Path rootpath = Paths.get("", "src", "main", "java", "com", "demo", "file", "date");
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -119,7 +119,7 @@ public class ServerFile implements Server {
             }
         }
         if (!flag) {
-            System.out.println("Sorry, the book has been loaned");
+            response.getWriter().println("Sorry, the book has been loaned");
         } else {
             fileRepository.delete();
             for (BookFile element1 : target1) {
@@ -128,7 +128,7 @@ public class ServerFile implements Server {
             for (BookFile element : target) {
                 fileRepository.save(element);
             }
-            System.out.println("sucess borrow the book");
+            response.getWriter().println("sucess borrow the book");
         }
     }
 
@@ -152,7 +152,7 @@ public class ServerFile implements Server {
                     for (BookFile element : target) {
                         fileRepository.save(element);
                     }
-                    return temp.toString();
+                    return "success to return!";
                 }
             }
         }
