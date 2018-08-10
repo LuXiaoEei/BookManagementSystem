@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.*;
 
 @RestController
-
+@RequestMapping(value = "/past", method = RequestMethod.GET)
 public class Controller_past {
 
     @Autowired
