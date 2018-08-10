@@ -24,6 +24,6 @@ public interface Server {
 
     public void loanBookByUserAndIsbn(String user,String isbn,HttpServletResponse response) throws IOException, ParseException;
 
-    public Object returnbookByUserAndIsbn(String user,String isbn,HttpServletResponse response) throws IOException;
+    public Object returnbookByUserAndIsbn(String user,String isbn,HttpServletResponse response) throws IOException, ParseException;
 
 }

@@ -27,32 +27,6 @@ public class ServerGemfire implements Server {
     private BookRepositoryGemfire bookRepositoryGemfire;
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    private String isVaildId(String id) throws IdError {
-        String regex = "[^0-9]";
-        if (Pattern.compile(regex).matcher(id).find()) {
-            throw new IdError(id + "is not a vaild id");
-        } else {
-            return id;
-        }
-    }
-
-    private String isVaildIsbn(String isbn) throws IsbnNotFound {
-        String regex = "[^A-Za-z0-9]";
-        if (!Pattern.compile(regex).matcher(isbn).find()) {
-            if (isbn.length() == 12) {
-                if (isbn.startsWith("978")) {
-                    return isbn;
-                } else {
-                    throw new IsbnNotFound(isbn + "is not vaild");
-                }
-            }
-            if (isbn.length() == 9) {
-                return "978" + isbn;
-            }
-        }
-        throw new IsbnNotFound(isbn + "is not vaild");
-    }
-
     @Override
     public String addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws  IdError, IsbnNotFound {
         if (id.equals("")) {
@@ -63,7 +37,7 @@ public class ServerGemfire implements Server {
             //response.getWriter().println("Error: in Gemfire model, you must input id!");
             throw new IsbnNotFound("Error: isbn is needed");
         }
-        BookGemfire bookGemfire = new BookGemfire(isVaildId(id), bookname, isVaildIsbn(isbn), category, press, user, loantime, returntime, df.format(new Date()));
+        BookGemfire bookGemfire = new BookGemfire(id, bookname, isbn, category, press, user, loantime, returntime, df.format(new Date()));
         bookRepositoryGemfire.save(bookGemfire);
         return bookGemfire.toString();
     }
@@ -87,32 +61,31 @@ public class ServerGemfire implements Server {
         if (!StringUtils.isBlank(bookname) && bookname.equals("") | ((bookname.equals("''") | (bookname.equals("\"\""))))) {
             response.getWriter().println("don't set the bookname to null");
             throw new BooknameNotFound("bookname should be set validly");
-        } else {
-            String datetime = df.format(new Date());
-            Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(condition);
-            if (!StringUtils.isBlank(bookname))
-                for (BookGemfire element : result) {
-                    element.setBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname);
-                    element.setUpdatetime(datetime);
-                }
-            if (!StringUtils.isBlank(press))
-                for (BookGemfire element : result) {
-                    element.setPress((press.equals("''") | (press.equals("\"\""))) ? "" : press);
-                    element.setUpdatetime(datetime);
-                }
-            if (!StringUtils.isBlank(category))
-                for (BookGemfire element : result) {
-                    element.setCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category);
-                    element.setUpdatetime(datetime);
-                }
-            if (!StringUtils.isBlank(isbn))
-                for (BookGemfire element : result) {
-                    element.setIsbn(isbn);
-                    element.setUpdatetime(datetime);
-                }
-            bookRepositoryGemfire.saveAll(result);
-            return result;
         }
+        String datetime = df.format(new Date());
+        Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(condition);
+        if (!StringUtils.isBlank(bookname))
+            for (BookGemfire element : result) {
+                element.setBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname);
+                element.setUpdatetime(datetime);
+            }
+        if (!StringUtils.isBlank(press))
+            for (BookGemfire element : result) {
+                element.setPress((press.equals("''") | (press.equals("\"\""))) ? "" : press);
+                element.setUpdatetime(datetime);
+            }
+        if (!StringUtils.isBlank(category))
+            for (BookGemfire element : result) {
+                element.setCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category);
+                element.setUpdatetime(datetime);
+            }
+        if (!StringUtils.isBlank(isbn))
+            for (BookGemfire element : result) {
+                element.setIsbn(isbn);
+                element.setUpdatetime(datetime);
+            }
+        bookRepositoryGemfire.saveAll(result);
+        return result;
     }
 
     @Override
@@ -140,7 +113,7 @@ public class ServerGemfire implements Server {
                 element.setLoantime(df.format(new Date()));
                 element.setUser(user);
                 bookRepositoryGemfire.save(element);
-                response.getWriter().println(user+" success borrowing isbn: s"+ isbn +" at "+df.format(new Date()));
+                response.getWriter().println(user+" success borrowing isbn: "+ isbn +" at "+df.format(new Date()));
                 tag=true;
                 break;
             }
@@ -150,27 +123,21 @@ public class ServerGemfire implements Server {
     }
 
     @Override
-    public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException {
+    public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException, ParseException {
         Collection<BookGemfire> result = bookRepositoryGemfire.describe(-1);
         result = result.stream().filter(book -> book.getIsbn().equals(isbn) & book.getUser().equals(user)).collect(Collectors.toList());
-        boolean flag = false;
         if (!result.isEmpty()) {
-            BookGemfire temp1 = result.iterator().next();
-            if (!temp1.getLoantime().equals("") && temp1.getReturntime().equals("") || temp1.getReturntime().equals("")) {
-                BookGemfire temp = result.iterator().next();
-                temp.setUser(user);
-                temp.setReturntime(df.format(new Date()));
-                bookRepositoryGemfire.save(temp);
-                response.getWriter().println(user + " success returning isbn: " + isbn + " at " + df.format(new Date()));
-                flag = true;
-                return null;
+            for (BookGemfire temp : result) {
+                if (!temp.getLoantime().equals("") && temp.getReturntime().equals("") || df.parse(temp.getReturntime()).before(df.parse(temp.getLoantime()))) {
+                    temp.setUser(user);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    temp.setReturntime(df.format(new Date()));
+                    bookRepositoryGemfire.save(temp);
+                    return temp.toString();
+                }
             }
         }
-        if (!flag) {
-            response.getWriter().println("you have not borrowed the book");
-            return null;
-        }
-        return null;
+        return "No books need to be return!";
     }
 }
 
