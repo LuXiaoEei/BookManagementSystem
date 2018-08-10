@@ -3,23 +3,14 @@ package com.demo.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import com.demo.error.*;
-import com.demo.geode.model.BookGemfire;
-import com.demo.geode.repository.BookRepositoryGemfire;
-import com.demo.mysql.model.BookMysql;
-import com.demo.mysql.repository.BookRepositoryMysql;
-import com.demo.server.Server;
-import org.apache.commons.lang.StringUtils;
+import com.demo.exception.*;
+import com.demo.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,14 +20,13 @@ import javax.servlet.http.*;
 
 public class Controller{
 
-    @Value("${datasource}")
-    static String datasource;
+    @Value("${datasource}")  private String datasource;
 
 //    private String a=datasource;
 
     @Autowired
-    @Qualifier("File")
-    Server server;
+    @Qualifier("serviceFile")
+    Service service;
 
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -72,14 +62,14 @@ public class Controller{
 
     @RequestMapping(value = {"/**","/*"},method = RequestMethod.GET)
     public void noPageFind(HttpServletRequest request,HttpServletResponse response) throws IOException, PageNotFound {
-        System.out.println("error: no page found: "+ request.getRequestURI()+" is not a vaild url!");
+        System.out.println("exception: no page found: "+ request.getRequestURI()+" is not a vaild url!");
         throw new PageNotFound("Error: invalid url: "+request.getRequestURI()+" ; Page not found!");
     }
 
     @ExceptionHandler({MissingServletRequestParameterException.class, NoSuchFieldException.class})
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
-        System.out.println("error: "+ex.getMessage());
-        response.getWriter().printf("error: "+ex.getMessage());
+        System.out.println("exception: "+ex.getMessage());
+        response.getWriter().printf("exception: "+ex.getMessage());
         response.flushBuffer();
     }
 
@@ -93,13 +83,13 @@ public class Controller{
                           @RequestParam(value = "category", required = false,defaultValue = "") String category,
                           @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
                           HttpServletResponse response) throws IOException, IdError, IsbnNotFound {
-        return server.addbook(isVaildId(id),bookname,isVaildIsbn(isbn),category,press,user,loantime,returntime,df.format(new Date()),response);
+        return service.addbook(isVaildId(id),bookname,isVaildIsbn(isbn),category,press,user,loantime,returntime,df.format(new Date()),response);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Object deleteBook(@RequestParam(value = "isbn", required = true) String isbn,
                              HttpServletResponse response) throws IsbnNotFound, IOException {
-        return server.deleteBookByIsbn(isVaildIsbn(isbn),response);
+        return service.deleteBookByIsbn(isVaildIsbn(isbn),response);
     }
 
 
@@ -110,7 +100,7 @@ public class Controller{
                              @RequestParam(value = "isbn", required = false) String isbn,
                              @RequestParam(value = "condition", required = true) String condition,
                              HttpServletResponse response) throws IsbnNotFound, BooknameNotFound, IOException {
-        return server.updateBookByIsbn(press,category,bookname,isVaildIsbn(isbn),isVaildIsbn(condition),response);
+        return service.updateBookByIsbn(press,category,bookname,isVaildIsbn(isbn),isVaildIsbn(condition),response);
     }
 
     @RequestMapping(value = "/describe", method = RequestMethod.GET)
@@ -118,33 +108,33 @@ public class Controller{
             @RequestParam(value = "start", required = false,defaultValue = "0") String start,
             @RequestParam(value = "nums", required = false,defaultValue = "all") String nums,
             HttpServletResponse response) throws IOException {
-        return server.describeBook(start,nums,response);
+        return service.describeBook(start,nums,response);
     }
 
     @RequestMapping(value = "/select/bookname/{bookname}", method = RequestMethod.GET)
     public Object findBook(@PathVariable(required = true) String bookname,
                            HttpServletResponse response) throws IOException {
-        return server.selectByBooknameLike(bookname,response);
+        return service.selectByBooknameLike(bookname,response);
     }
 
     @RequestMapping(value = "/select/user/{user}", method = RequestMethod.GET)
     public Object findUser(@PathVariable(required = true) String user,
                            HttpServletResponse response) throws IOException {
-        return server.selectByUser(user,response);
+        return service.selectByUser(user,response);
     }
 
     @RequestMapping(value = "/loanbook", method = RequestMethod.GET)
     public void loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                          @RequestParam(value = "user", required = true) String user,
                          HttpServletResponse response) throws IOException, IsbnNotFound, ParseException {
-        server.loanBookByUserAndIsbn(user,isVaildIsbn(isbn),response);
+        service.loanBookByUserAndIsbn(user,isVaildIsbn(isbn),response);
     }
 
     @RequestMapping(value = "/returnbook", method = RequestMethod.GET)
     public Object returnBook(@RequestParam(value = "isbn", required = true) String isbn,
                              @RequestParam(value = "user", required = true) String user,
                              HttpServletResponse response) throws IOException, IsbnNotFound, ParseException {
-        return server.returnbookByUserAndIsbn(user,isVaildIsbn(isbn),response);
+        return service.returnbookByUserAndIsbn(user,isVaildIsbn(isbn),response);
 
     }
 
