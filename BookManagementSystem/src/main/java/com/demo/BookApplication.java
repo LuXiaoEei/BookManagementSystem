@@ -14,7 +14,7 @@ import org.springframework.data.gemfire.repository.config.EnableGemfireRepositor
 
 
 @SpringBootApplication()
-@ClientCacheApplication(name = "geodeDemo", logLevel = "debug",
+@ClientCacheApplication(name = "BookDemo", logLevel = "debug",
 		locators = {@ClientCacheApplication.Locator(host="localhost",port = 10334)})
 @EnableGemfireRepositories(basePackages = "com.demo.geode.repository")
 @EnableEntityDefinedRegions(basePackageClasses = BookGemfire.class, clientRegionShortcut = ClientRegionShortcut.PROXY)

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface Server {
-    public BookFile addbook(String id , String bookname, String isbn, String  category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound;
+    public Object addbook(String id , String bookname, String isbn, String  category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound;
 
     public Object deleteBookByIsbn(String isbn,HttpServletResponse response) throws IOException;
 

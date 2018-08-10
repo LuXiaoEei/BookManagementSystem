@@ -81,7 +81,7 @@ public class Controller{
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String addBook(@RequestParam(value = "id", required = false,defaultValue = "") String id,
+    public Object addBook(@RequestParam(value = "id", required = false,defaultValue = "") String id,
                           @RequestParam(value = "isbn", required = true) String isbn,
                           @RequestParam(value = "press", required = false,defaultValue = "") String press,
                           @RequestParam(value = "user", required = false,defaultValue = "") String user,
@@ -95,7 +95,7 @@ public class Controller{
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public Object deleteBook(@RequestParam(value = "isbn", required = true) String isbn,
-                             HttpServletResponse response) throws IsbnNotFound {
+                             HttpServletResponse response) throws IsbnNotFound, IOException {
         return server.deleteBookByIsbn(isVaildIsbn(isbn),response);
     }
 
@@ -106,7 +106,7 @@ public class Controller{
                              @RequestParam(value = "bookname", required = false) String bookname,
                              @RequestParam(value = "isbn", required = false) String isbn,
                              @RequestParam(value = "condition", required = true) String condition,
-                             HttpServletResponse response) throws IsbnNotFound, BooknameNotFound {
+                             HttpServletResponse response) throws IsbnNotFound, BooknameNotFound, IOException {
         return server.updateBookByIsbn(press,category,bookname,isVaildIsbn(isbn),isVaildIsbn(condition),response);
     }
 
@@ -114,26 +114,26 @@ public class Controller{
     public  Object describeBook(
             @RequestParam(value = "start", required = false,defaultValue = "0") String start,
             @RequestParam(value = "nums", required = false,defaultValue = "all") String nums,
-            HttpServletResponse response){
+            HttpServletResponse response) throws IOException {
         return server.describeBook(start,nums,response);
     }
 
     @RequestMapping(value = "/select/bookname/{bookname}", method = RequestMethod.GET)
     public Object findBook(@PathVariable(required = true) String bookname,
-                           HttpServletResponse response){
+                           HttpServletResponse response) throws IOException {
         return server.selectByBooknameLike(bookname,response);
     }
 
     @RequestMapping(value = "/select/user/{user}", method = RequestMethod.GET)
     public Object findUser(@PathVariable(required = true) String user,
-                           HttpServletResponse response){
+                           HttpServletResponse response) throws IOException {
         return server.selectByUser(user,response);
     }
 
     @RequestMapping(value = "/loanbook", method = RequestMethod.GET)
     public void loanBook(@RequestParam(value = "isbn", required = true) String isbn,
                          @RequestParam(value = "user", required = true) String user,
-                         HttpServletResponse response) throws IOException, IsbnNotFound {
+                         HttpServletResponse response) throws IOException, IsbnNotFound, ParseException {
         server.loanBookByUserAndIsbn(user,isVaildIsbn(isbn),response);
     }
 
