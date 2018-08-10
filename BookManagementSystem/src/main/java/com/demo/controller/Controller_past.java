@@ -37,17 +37,17 @@ public class Controller_past {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-    private String isVaildIsbn(String isbn) throws  IsbnNotFound {
+    private String isVaildIsbn(String isbn) throws IsbnNotFound {
         String regex = "[^A-Za-z0-9]";
         if (!Pattern.compile(regex).matcher(isbn).find()){
-            if(isbn.length()==12){
+            if(isbn.length()==13){
                 if (isbn.startsWith("978")){
                     return isbn;
                 }else{
                     throw new IsbnNotFound(isbn+"is not vaild");
                 }
             }
-            if (isbn.length()==9){
+            if (isbn.length()==10){
                 return "978"+isbn;
             }
         }

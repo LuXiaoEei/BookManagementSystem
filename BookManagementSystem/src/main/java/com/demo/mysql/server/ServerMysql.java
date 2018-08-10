@@ -1,16 +1,26 @@
 package com.demo.mysql.server;
 
+import com.demo.error.BooknameNotFound;
 import com.demo.error.IdError;
+import com.demo.error.IsbnNotFound;
 import com.demo.mysql.model.BookMysql;
 import com.demo.mysql.repository.BookRepositoryMysql;
 import com.demo.server.Server;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
+
+@Service("Mysql")
 public class ServerMysql implements Server {
+
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Autowired
     private BookRepositoryMysql bookRepositoryMysql;
@@ -29,36 +39,72 @@ public class ServerMysql implements Server {
 
     @Override
     public Object deleteBookByIsbn(String isbn, HttpServletResponse response) {
-        return null;
+        return bookRepositoryMysql.deleteByIsbnEquals(isbn);
     }
 
     @Override
-    public Object updateBookByIsbn(String isbn, HttpServletResponse response) {
-        return null;
+    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IsbnNotFound, BooknameNotFound {
+        if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
+            throw new IsbnNotFound("isbn should be set validly");
+        }
+        if (!StringUtils.isBlank(bookname) &&bookname.equals ("")|((bookname.equals("''") | (bookname.equals("\"\""))))) {
+            throw new BooknameNotFound("bookname should be set validly");
+        }
+        String datetime = df.format(new Date());
+        if (!StringUtils.isBlank(bookname)){
+            bookRepositoryMysql.updateBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname, datetime, condition);
+        }
+        if (!StringUtils.isBlank(category)){
+            bookRepositoryMysql.updateCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category, datetime, condition);
+        }
+        if (!StringUtils.isBlank(press)){
+            bookRepositoryMysql.updatePress((press.equals("''") | (press.equals("\"\""))) ? "" : press, datetime, condition);
+        }
+        if (!StringUtils.isBlank(isbn)) {
+            bookRepositoryMysql.updateIsbn(isbn, datetime, condition);
+        }
+        String tmpisbn = (StringUtils.isBlank(isbn)) ? condition : isbn;
+        return bookRepositoryMysql.selectByIsbn(tmpisbn);
     }
 
     @Override
-    public Object describeBook(int starts, int num, HttpServletResponse response) {
-        return null;
+    public Object describeBook(String start, String nums, HttpServletResponse response) {
+        int starts = Integer.valueOf(start);
+        int num = (nums.equals("all"))?bookRepositoryMysql.countAll():Integer.valueOf(nums);
+        return bookRepositoryMysql.describe(starts,num);
     }
 
     @Override
     public Object selectByBooknameLike(String bookname, HttpServletResponse response) {
-        return null;
+        return bookRepositoryMysql.findByBooknameContains(bookname);
     }
 
     @Override
     public Object selectByUser(String user, HttpServletResponse response) {
-        return null;
+        return bookRepositoryMysql.findByUserEquals(user);
     }
 
     @Override
-    public void loanBookByUserAndIsbn(String user, String isbn, HttpServletResponse response) {
-
+    public void loanBookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException {
+        Collection<BookMysql> res = bookRepositoryMysql.serachNoloanedBookByIsbn(isbn);
+        if (res.isEmpty()){
+            response.getWriter().println("no book remained");
+        }else{
+            Long id =res.iterator().next().getId();
+            bookRepositoryMysql.loanBook(user,df.format(new Date()),id);
+            response.getWriter().println(user+" success borrowing isbn: "+ isbn +" at "+df.format(new Date()));
+        }
     }
 
     @Override
-    public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) {
+    public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException {
+        Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
+        if (res.isEmpty()){
+            response.getWriter().println("you have not borrowed the book");
+        }else{
+            bookRepositoryMysql.returnBook(res.iterator().next().getId());
+            response.getWriter().println(user+" success returning isbn: "+ isbn +" at "+ df.format(new Date()));
+        }
         return null;
     }
 }

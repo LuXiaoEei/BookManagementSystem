@@ -73,7 +73,7 @@ public class Controller{
         throw new PageNotFound("Error: invalid url: "+request.getRequestURI()+" ; Page not found!");
     }
 
-    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ExceptionHandler({MissingServletRequestParameterException.class, NoSuchFieldException.class})
     public void processMethod(Exception ex, HttpServletRequest request , HttpServletResponse response) throws IOException {
         System.out.println("error: "+ex.getMessage());
         response.getWriter().printf("error: "+ex.getMessage());
