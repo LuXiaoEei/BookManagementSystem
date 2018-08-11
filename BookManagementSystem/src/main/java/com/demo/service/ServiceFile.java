@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.PublicKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,13 +25,11 @@ import java.util.stream.Collectors;
 @org.springframework.stereotype.Service()
 @Qualifier("serviceFile")
 public class ServiceFile implements Service {
-//    private Path rootpath = Paths.get("", "src", "main", "java", "com", "demo", "file", "date");
+
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Autowired
     private BookRepositoryFile bookRepositoryFile;
-//    private BookRepositoryFile bookRepositoryFile = new BookRepositoryFile();
-
 
     @Override
     public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound {

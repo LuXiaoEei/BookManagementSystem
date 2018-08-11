@@ -31,7 +31,6 @@ public class FileController {
     @Value("${datasource}")
     static String datasource;
 
-    //    FileManager fileManager = new FileManager();
     private Path rootpath = Paths.get("", "src", "main", "java", "com", "demo", "file", "date");
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
