@@ -82,16 +82,13 @@ public class Controller{
 
 
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({PageNotFound.class,IsbnNotFound.class,IdError.class,DatabaseError.class,BooknameNotFound.class, NoSuchFieldException.class})
+    @ExceptionHandler(MissingServletRequestParameterException.class)
     public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) {
-        System.out.println("======================================================");
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
-                request.getDescription(false));
-        System.out.println(ex.getMessage());
-        System.out.println("======================================================");
-        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+                request.getDescription(false),500);
+        return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 
     @RequestMapping(value = "/info",method = RequestMethod.GET)
     public void getInfo(HttpServletResponse response) throws IOException {
