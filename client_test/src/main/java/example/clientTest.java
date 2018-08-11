@@ -1,6 +1,8 @@
-package demo;
+package example;
 
-public class Threadtest {
+import demo.RunnableDemo2;
+
+public class clientTest {
     public static void main(String []args) throws Exception {
         //RunnableDemo r=new RunnableDemo();
         RunnableDemo2 r=new RunnableDemo2();
