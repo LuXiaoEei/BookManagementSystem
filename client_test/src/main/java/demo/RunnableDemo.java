@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class RunnableDemo implements Runnable {
     public static int id = 1;
-    private String s = "C:\\Users\\lli214\\Desktop\\mockUpDataForInterns.txt";
+    private String s = "C:\\Users\\lli214\\Documents\\BookManagementSystem\\client_test\\src\\main\\java\\mockUpDataForInterns.txt";
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
 
     public RunnableDemo() throws IOException, NullPointerException {
