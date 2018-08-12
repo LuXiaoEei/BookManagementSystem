@@ -7,11 +7,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RunnableDemo2 implements Runnable {
-    public static int cout = 1;
-    private String s = "C:\\Users\\lli214\\Documents\\BookManagementSystem\\client_test\\src\\main\\java\\mockUpDataForInterns.txt";
-    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
+    private static int cout = 1;
+    private String s = Paths.get("","src","main","java","mockUpDataForInterns.txt").toString();
+//    private String s = "\\src\\main\\java\\mockUpDataForInterns.txt";
+    private BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
 
     public RunnableDemo2() throws IOException, NullPointerException {
     }

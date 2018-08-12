@@ -55,12 +55,10 @@ public class ServiceGemfire implements Service {
     @Override
     public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException, IsbnNotFound, BooknameNotFound {
         if (!StringUtils.isBlank(isbn) && isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            response.getWriter().println("don't set the isbn to null");
-            throw new IsbnNotFound("isbn should be set validly");
+            throw new IsbnNotFound("don't set the isbn to null");
         }
-        if (!StringUtils.isBlank(bookname) && bookname.equals("") | ((bookname.equals("''") | (bookname.equals("\"\""))))) {
-            response.getWriter().println("don't set the bookname to null");
-            throw new BooknameNotFound("bookname should be set validly");
+        if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
+            throw new BooknameNotFound("don't set the bookname to null");
         }
         String datetime = df.format(new Date());
         Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(condition);
@@ -135,10 +133,9 @@ public class ServiceGemfire implements Service {
             for (BookGemfire temp : result) {
                 if (!temp.getLoantime().equals("") && temp.getReturntime().equals("") || df.parse(temp.getReturntime()).before(df.parse(temp.getLoantime()))) {
                     temp.setUser(user);
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     temp.setReturntime(df.format(new Date()));
                     bookRepositoryGemfire.save(temp);
-                    return temp.toString();
+                    return "Success to return!";
                 }
             }
         }

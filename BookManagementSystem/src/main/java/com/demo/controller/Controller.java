@@ -45,7 +45,7 @@ public class Controller{
                 this.service = controllerTools.getApplicationContext().getBean(ServiceMysql.class);
                 break;
             default:
-                throw new DatabaseError("You choose the "+ controllerTools.getDatasource()+" Please choose the vaild datasource. It supports File/Gemfire/Mysql");
+                throw new DatabaseError("You choose the "+ controllerTools.getDatasource()+"; Please choose the vaild datasource. It supports File/Gemfire/Mysql.");
         }
     }
 

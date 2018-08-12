@@ -11,7 +11,7 @@ import org.springframework.data.gemfire.repository.config.EnableGemfireRepositor
 
 
 @SpringBootApplication()
-@ClientCacheApplication(name = "BookDemo", logLevel = "debug",
+@ClientCacheApplication(name = "BookDemo", logLevel = "ERROR",
 		locators = {@ClientCacheApplication.Locator(host="localhost",port = 10334)})
 @EnableGemfireRepositories(basePackages = "com.demo.repository")
 @EnableEntityDefinedRegions(basePackageClasses = BookGemfire.class, clientRegionShortcut = ClientRegionShortcut.PROXY)

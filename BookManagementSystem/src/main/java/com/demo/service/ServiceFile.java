@@ -61,12 +61,10 @@ public class ServiceFile implements Service {
         Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         ArrayList<BookFile> bookFile = new ArrayList<BookFile>();
         if (!StringUtils.isBlank(isbn) && isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            response.getWriter().println("don't set the isbn to null");
-            throw new IsbnNotFound("isbn should be set validly");
+            throw new IsbnNotFound("don't set the isbn to null");
         }
-        if (!StringUtils.isBlank(bookname) && bookname.equals("") | ((bookname.equals("''") | (bookname.equals("\"\""))))) {
-            response.getWriter().println("don't set the bookname to null");
-            throw new BooknameNotFound("bookname should be set validly");
+        if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
+            throw new BooknameNotFound("don't set the bookname to null");
         }
         for (BookFile element : allcontent) {
             if (element.getIsbn().equals(condition)) {
@@ -103,7 +101,7 @@ public class ServiceFile implements Service {
     public Object describeBook( String start,  String nums, HttpServletResponse response) throws IOException {
         HashMap<Integer, BookFile> allcontent = bookRepositoryFile.readFileSource();
         ArrayList<BookFile> result = new ArrayList<BookFile>();
-        Integer s=Integer.parseInt(start);
+        Integer s = Integer.valueOf(start);
         Integer end = ((nums.equals("all")) ? allcontent.keySet().size() : Integer.valueOf(nums)) + s;
         for (Integer i = s; i < end; i++) {
             if (allcontent.get(i) != null) {
@@ -173,10 +171,10 @@ public class ServiceFile implements Service {
                     for (BookFile element : target) {
                         bookRepositoryFile.save(element);
                     }
-                    return "success to return!";
+                    return "Success to return!";
                 }
             }
         }
-        return "No books need to be return!";
+        return "No books need to be returned!";
     }
 }
