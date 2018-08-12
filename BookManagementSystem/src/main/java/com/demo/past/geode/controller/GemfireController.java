@@ -31,7 +31,7 @@ public class GemfireController {
         response.flushBuffer();
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
     public String addBook(@RequestParam(value = "id", required = true) String id,
                           @RequestParam(value = "isbn", required = true) String isbn,
                           @RequestParam(value = "press", required = false, defaultValue = "") String press,

@@ -30,7 +30,7 @@ public class MysqlController {
         response.flushBuffer();
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
     public String addBook(@RequestParam(value = "isbn", required = true) String isbn,
                             @RequestParam(value = "bookname", required = true) String bookname,
                             @RequestParam(value = "press", required = false,defaultValue = "") String press,

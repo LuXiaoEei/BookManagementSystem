@@ -41,7 +41,7 @@ public class FileController {
         response.flushBuffer();
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = {RequestMethod.GET,RequestMethod.POST})
     public BookFile addBook(@RequestParam(value = "id", required = true) String id,
                             @RequestParam(value = "isbn", required = true) String isbn,
                             @RequestParam(value = "bookname", required = true) String bookname,
