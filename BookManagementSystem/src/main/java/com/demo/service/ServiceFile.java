@@ -4,6 +4,7 @@ import com.demo.exception.BooknameNotFound;
 import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 import com.demo.model.BookFile;
+import com.demo.model.BookGemfire;
 import com.demo.repository.BookRepositoryFile;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,9 +119,17 @@ public class ServiceFile implements Service {
     }
 
     @Override
-    public Object selectByUser(String user, HttpServletResponse response) throws IOException {
-        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
-        return allcontent.stream().filter(x -> x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
+    public Object selectByUser(String user, HttpServletResponse response) throws IOException, ParseException {
+        Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values().stream().filter(x -> x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));;
+        Collection<BookFile> result1=new ArrayList<>();
+        if (!allcontent.isEmpty()) {
+            for (BookFile temp : allcontent) {
+                if (!temp.getLoantime().equals("") && temp.getReturntime().equals("") || df.parse(temp.getReturntime()).before(df.parse(temp.getLoantime()))) {
+                    result1.add(temp);
+                }
+            }
+        }
+        return result1;
     }
 
     @Override

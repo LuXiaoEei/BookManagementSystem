@@ -117,7 +117,7 @@ public class Controller{
 
     @RequestMapping(value = "/select/user/{user}", method = RequestMethod.GET)
     public Object findUser(@PathVariable(required = true) String user,
-                           HttpServletResponse response) throws IOException {
+                           HttpServletResponse response) throws IOException, ParseException {
         return service.selectByUser(user,response);
     }
 

@@ -21,7 +21,7 @@ public interface Service {
 
     public Object selectByBooknameLike(String bookname,HttpServletResponse response) throws IOException;
 
-    public Object selectByUser(String user,HttpServletResponse response) throws IOException;
+    public Object selectByUser(String user,HttpServletResponse response) throws IOException, ParseException;
 
     public void loanBookByUserAndIsbn(String user,String isbn,HttpServletResponse response) throws IOException, ParseException;
 

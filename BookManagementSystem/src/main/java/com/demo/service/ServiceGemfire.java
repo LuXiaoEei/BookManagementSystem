@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -103,10 +104,18 @@ public class ServiceGemfire implements Service {
     }
 
     @Override
-    public Object selectByUser(String user, HttpServletResponse response) {
-        return bookRepositoryGemfire.findByUser(user);
+    public Object selectByUser(String user, HttpServletResponse response) throws ParseException {
+        Collection<BookGemfire> result =bookRepositoryGemfire.findByUser(user);
+        Collection<BookGemfire> result1=new ArrayList<>();
+        if (!result.isEmpty()) {
+            for (BookGemfire temp : result) {
+                if (!temp.getLoantime().equals("") && temp.getReturntime().equals("") || df.parse(temp.getReturntime()).before(df.parse(temp.getLoantime()))) {
+                    result1.add(temp);
+                }
+            }
+        }
+        return result1;
     }
-
     @Override
     public void loanBookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException, ParseException {
         boolean tag=false;
