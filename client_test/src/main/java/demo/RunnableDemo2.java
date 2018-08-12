@@ -10,7 +10,7 @@ import java.io.*;
 
 public class RunnableDemo2 implements Runnable {
     public static int cout = 1;
-    private String s = "C:\\Users\\lli214\\Desktop\\mockUpDataForInterns.txt";
+    private String s = "C:\\Users\\lli214\\Documents\\BookManagementSystem\\client_test\\src\\main\\java\\mockUpDataForInterns.txt";
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
 
     public RunnableDemo2() throws IOException, NullPointerException {
@@ -22,7 +22,7 @@ public class RunnableDemo2 implements Runnable {
             String s = null;
             RestTemplate restTemplate = new RestTemplate();
             while ((s = br.readLine()) != null) {//使用readLine方法，一次读一行
-                if (s.length() == 0) {
+                if (s.length() == 0|s.equals("\t\t\t\t")) {
                     break;
                 }
                 String a[] = s.split("\t");

@@ -27,7 +27,7 @@ public class RunnableDemo implements Runnable {
             RestTemplate restTemplate = new RestTemplate();
             synchronized (br) {
                 while ((s = br.readLine()) != null) {//使用readLine方法，一次读一行
-                    if (s.length() == 0) {
+                    if (s.length() == 0|s.equals("\t\t\t\t")){
                         break;
                     }
                     String a[] = s.split("\t");
