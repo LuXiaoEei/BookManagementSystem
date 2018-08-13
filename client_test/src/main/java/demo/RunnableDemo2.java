@@ -9,9 +9,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class RunnableDemo2 implements Runnable {
-    private static int cout = 1;
     private String s = Paths.get("","src","main","java","mockUpDataForInterns.txt").toString();
 //    private String s = "\\src\\main\\java\\mockUpDataForInterns.txt";
     private BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
@@ -44,7 +44,7 @@ public class RunnableDemo2 implements Runnable {
                 //传url
                 String url = "http://localhost:8080/add";
                 MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-                data.add("id", String.valueOf(cout++));
+                data.add("id", String.valueOf(UUID.randomUUID()));
                 data.add("bookname", a[0]);
                 data.add("press", a[1]);
                 data.add("isbn", isbn);

@@ -44,7 +44,7 @@ public class ControllerTools {
 
     public String isVaildId(String id ) throws IdError {
         if (id==null) return null;
-        String regex = "[^0-9]";
+        String regex = "[^A-Za-z0-9-]";
         if(Pattern.compile(regex).matcher(id).find()){
             throw new IdError("id: "+id+" is not a vaild id");
         }else{
