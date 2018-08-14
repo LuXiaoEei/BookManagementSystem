@@ -71,6 +71,7 @@ public class Controller{
         response.getWriter().println("The datasource used now is "+datasource.replace("service","")+";");
         response.getWriter().println("<br/>");
         response.getWriter().println("The amount of data in the database is "+ service.countAll()+";");
+        response.flushBuffer();
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})

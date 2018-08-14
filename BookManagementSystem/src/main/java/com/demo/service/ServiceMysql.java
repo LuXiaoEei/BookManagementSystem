@@ -32,7 +32,8 @@ public class ServiceMysql implements Service {
             response.getWriter().println("Warning: in Mysql model, your input id will not work, it will be automatic assigned !");
             response.getWriter().println("<br/>");
         }
-            response.getWriter().println(bookMysql.toString());
+        response.getWriter().println(bookMysql.toString());
+        response.flushBuffer();
         return null;
     }
 
@@ -93,10 +94,12 @@ public class ServiceMysql implements Service {
         Collection<BookMysql> res = bookRepositoryMysql.serachNoloanedBookByIsbn(isbn);
         if (res.isEmpty()){
             response.getWriter().println("no book remained");
+            response.flushBuffer();
         }else{
             Long id =res.iterator().next().getId();
             bookRepositoryMysql.loanBook(user,df.format(new Date()),id);
             response.getWriter().println(user+" success borrowing isbn: "+ isbn +" at "+df.format(new Date()));
+            response.flushBuffer();
         }
     }
 
@@ -105,9 +108,11 @@ public class ServiceMysql implements Service {
         Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
         if (res.isEmpty()){
             response.getWriter().println("you have not borrowed the book");
+            response.flushBuffer();
         }else{
             bookRepositoryMysql.returnBook(res.iterator().next().getId());
             response.getWriter().println(user+" success returning isbn: "+ isbn +" at "+ df.format(new Date()));
+            response.flushBuffer();
         }
         return null;
     }

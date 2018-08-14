@@ -131,6 +131,7 @@ public class ServiceFile implements Service {
         }
         if (!flag) {
             response.getWriter().println("Sorry, the book has been loaned");
+            response.flushBuffer();
         } else {
             bookRepositoryFile.delete();
             for (BookFile element1 : target1) {
@@ -140,6 +141,7 @@ public class ServiceFile implements Service {
                 bookRepositoryFile.save(element);
             }
             response.getWriter().println("sucess borrow the book");
+            response.flushBuffer();
         }
     }
 

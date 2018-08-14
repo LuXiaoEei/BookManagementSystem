@@ -10,15 +10,13 @@ import org.springframework.data.gemfire.config.annotation.EnablePdx;
 import org.springframework.data.gemfire.repository.config.EnableGemfireRepositories;
 
 
-@SpringBootApplication()
-@ClientCacheApplication(name = "BookDemo", logLevel = "ERROR",
-		locators = {@ClientCacheApplication.Locator(host="localhost",port = 10334)})
+@SpringBootApplication
+@ClientCacheApplication(name = "BookDemo")
 @EnableGemfireRepositories(basePackages = "com.demo.repository")
 @EnableEntityDefinedRegions(basePackageClasses = BookGemfire.class, clientRegionShortcut = ClientRegionShortcut.PROXY)
 
 @EnablePdx
 public class BookApplication {
-//	private static final Logger log = LoggerFactory.getLogger(BookApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(BookApplication.class, args);
 	}

@@ -111,11 +111,15 @@ public class ServiceGemfire implements Service {
                 element.setUser(user);
                 bookRepositoryGemfire.save(element);
                 response.getWriter().println(user+" success borrowing isbn: "+ isbn +" at "+df.format(new Date()));
+                response.flushBuffer();
                 tag=true;
                 break;
             }
         }
-        if (!tag) response.getWriter().println("no book remained");
+        if (!tag) {
+            response.getWriter().println("no book remained");
+            response.flushBuffer();
+        }
 
     }
 
@@ -135,7 +139,7 @@ public class ServiceGemfire implements Service {
         }
         return "No books need to be return!";
     }
-//    flag indicates the state of book:true means availability
+/* flag indicates the state of book:true means availability*/
     public boolean flag (BookGemfire element) throws ParseException {
         return "".equals(element.getLoantime())||(!"".equals(element.getReturntime())&& df.parse(element.getReturntime()).after(df.parse(element.getLoantime())));
     }
