@@ -7,6 +7,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.*;
+import java.nio.file.Paths;
 import java.util.*;
 import java.io.*;
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class RunnableDemo implements Runnable {
     public static int id = 1;
-    private String s = "C:\\Users\\lli214\\Documents\\BookManagementSystem\\client_test\\src\\main\\java\\mockUpDataForInterns.txt";
+    private String s = Paths.get("","src","main","java","mockUpDataForInterns.txt").toString();
     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(s)), "GBK"));//构造一个BufferedReader类来读取文件
 
     public RunnableDemo() throws IOException, NullPointerException {

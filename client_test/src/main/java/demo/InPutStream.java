@@ -6,13 +6,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class InPutStream {
-    //Object inputsream()
+    //试读文件
     public static void main(String[] args) throws IOException {
         File f = new File("C:\\Users\\lli214\\Desktop\\mockUpDataForInterns.txt");
         FileInputStream fip = new FileInputStream(f);
-        // 构建FileInputStream对象
         InputStreamReader reader = new InputStreamReader(fip, "GBK");
-        // 构建InputStreamReader对象,编码与写入相同
         StringBuffer sb = new StringBuffer();
       while (reader.ready()) {
             sb.append((char) reader.read());
