@@ -1,13 +1,12 @@
 package com.demo.controller;
 
-import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @ControllerAdvice
@@ -42,14 +41,8 @@ public class ControllerTools {
         throw new IsbnNotFound("isbn: "+isbn+" is not vaild");
     }
 
-    public String isVaildId(String id ) throws IdError {
-        if (id==null) return null;
-        String regex = "[^A-Za-z0-9-]";
-        if(Pattern.compile(regex).matcher(id).find()){
-            throw new IdError("id: "+id+" is not a vaild id");
-        }else{
-            return id;
-        }
+    public String IdAutoGeneration() {
+        return UUID.randomUUID().toString();
     }
 
 }

@@ -9,9 +9,6 @@ import org.springframework.data.gemfire.mapping.annotation.Region;
 @Region(name = "BookGemfire")
 //public class BookGemfire implements Serializable {
 public class BookGemfire {
-
-//    private static final long serialVersionUID = 1L;
-
     @Id
     private String id;
 
@@ -23,12 +20,8 @@ public class BookGemfire {
     private String press;
 
     @LuceneIndexed
-
     private String loantime;
-
     private String returntime;
-
-
     private String updatetime;
 
     @PersistenceConstructor
@@ -43,7 +36,6 @@ public class BookGemfire {
         this.returntime = returntime;
         this.updatetime = updatetime;
     }
-
     public String getPress() { return press; }
 
     public void setPress(String press) { this.press = press; }

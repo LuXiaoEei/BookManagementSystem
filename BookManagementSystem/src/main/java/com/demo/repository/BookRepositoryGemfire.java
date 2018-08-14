@@ -14,12 +14,10 @@ public interface BookRepositoryGemfire extends CrudRepository<BookGemfire,String
 
     @Trace
     Collection<BookGemfire> findByIsbn(String isbn);
+
     @Trace
     @Query("SELECT * FROM /BookGemfire p WHERE p.bookname LIKE $1")
     Collection<BookGemfire> findByBooknameLike(String bookname);
-
-//    @Query("SELECT * FROM /BookGemfire p WHERE p.email LIKE $1")
-//    Collection<BookGemfire> getPersonsByEmailLike(String email);
 
     @Query("SELECT * FROM /BookGemfire limit $1")
     Collection<BookGemfire> describe(int rows);

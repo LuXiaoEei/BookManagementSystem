@@ -73,16 +73,15 @@ public class Controller{
     }
 
     @RequestMapping(value = "/add", method = {RequestMethod.POST, RequestMethod.GET})
-    public Object addBook(@RequestParam(value = "id", required = false,defaultValue = "") String id,
-                          @RequestParam(value = "isbn", required = true) String isbn,
+    public Object addBook(@RequestParam(value = "isbn", required = true) String isbn,
                           @RequestParam(value = "press", required = false,defaultValue = "") String press,
                           @RequestParam(value = "user", required = false,defaultValue = "") String user,
                           @RequestParam(value = "loantime", required = false,defaultValue = "") String loantime,
                           @RequestParam(value = "bookname", required = true) String bookname,
                           @RequestParam(value = "category", required = false,defaultValue = "") String category,
                           @RequestParam(value = "returntime", required = false,defaultValue = "") String returntime,
-                          HttpServletResponse response) throws IOException, IdError, IsbnNotFound {
-        return service.addbook(controllerTools.isVaildId(id),bookname,controllerTools.isVaildIsbn(isbn),category,press,user,loantime,returntime,df.format(new Date()),response);
+                          HttpServletResponse response) throws IOException, IsbnNotFound {
+        return service.addbook(controllerTools.IdAutoGeneration(),bookname,controllerTools.isVaildIsbn(isbn),category,press,user,loantime,returntime,df.format(new Date()),response);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)

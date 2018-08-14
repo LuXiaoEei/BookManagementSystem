@@ -1,7 +1,6 @@
 package com.demo.service;
 
 import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +8,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 public interface Service {
-    public Object addbook(String id , String bookname, String isbn, String  category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound;
+    public Object addbook(String id , String bookname, String isbn, String  category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IsbnNotFound;
 
     public Object deleteBookByIsbn(String isbn,HttpServletResponse response) throws IOException;
 

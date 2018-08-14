@@ -1,7 +1,6 @@
 package com.demo.service;
 
 import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 import com.demo.model.BookGemfire;
 import com.demo.repository.BookRepositoryGemfire;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,13 +27,8 @@ public class ServiceGemfire implements Service {
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Override
-    public String addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws  IdError, IsbnNotFound {
-        if (id.equals("")) {
-            //response.getWriter().println("Error: in Gemfire model, you must input id!");
-            throw new IdError("Error: in Gemfire model, you must input id!");
-        }
+    public String addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws  IsbnNotFound {
         if (isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            //response.getWriter().println("Error: in Gemfire model, you must input id!");
             throw new IsbnNotFound("Error: isbn is needed");
         }
         BookGemfire bookGemfire = new BookGemfire(id, bookname, isbn, category, press, user, loantime, returntime, df.format(new Date()));

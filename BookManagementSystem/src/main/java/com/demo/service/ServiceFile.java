@@ -1,10 +1,8 @@
 package com.demo.service;
 
 import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IdError;
 import com.demo.exception.IsbnNotFound;
 import com.demo.model.BookFile;
-import com.demo.model.BookGemfire;
 import com.demo.repository.BookRepositoryFile;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.PublicKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,11 +30,7 @@ public class ServiceFile implements Service {
     private BookRepositoryFile bookRepositoryFile;
 
     @Override
-    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IdError, IsbnNotFound {
-        if (id.equals("")) {
-            //response.getWriter().println("Error: in Gemfire model, you must input id!");
-            throw new IdError("Error: you must input id!");
-        }
+    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IsbnNotFound {
         if (isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
             //response.getWriter().println("Error: in Gemfire model, you must input id!");
             throw new IsbnNotFound("Error: isbn is needed");
