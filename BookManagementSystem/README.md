@@ -2,8 +2,7 @@
 
 ### BookEntry
 
-- id: *String*, primary key ,it can't be set to empty, the vaild id must
- only contain numbers;
+- id: *String*, primary key ,it can be generated automaticallythe and needn't be set,which only contain numbers;
 - bookname: *String*, the name of the book, it can't be empty;
 - isbn: *String*, the ISBN or ASBN of the book, the length of this field in the datasource must be 13,
 and the length of the vaild input must be 10 or 13, which only contains numbers or letters. If the length is 13,
@@ -23,13 +22,10 @@ it is the time of the last person to borrow books,and if someone borrow the book
  value includes *Gemfire,Mysql,File*. You can also change your Mysql address and port in this file.In order to run the Gemfire 
  correctly, you need run the Gemfire whose port is 10334 and create regin named BookGemfire before runing the server.
 
-1. **/add?isbn=&bookname=&press=&category=&id=**
+1. **/add?isbn=&bookname=&press=&category=**
     - the url can be used to add a book information by the specified datasource.
-    - Isbn and bookname is required in all datasource. in mysql and File, the id is also required,
-    otherwise, it will throw the error.
+    - Isbn and bookname is required in all datasource. 
     - Press,category,updatetime, user, loantime and returntime are not required, their default value is ""
-    - **note:** In Mysql, because of the automatic generation mechanism of primary key (id), even though set the value of id, 
-    the id will not work.
     - it also support post
     
 2. **/delete?isbn=**
