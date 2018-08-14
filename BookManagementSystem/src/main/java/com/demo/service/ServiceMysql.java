@@ -1,7 +1,7 @@
 package com.demo.service;
 
-import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IsbnNotFound;
+import com.demo.error.BooknameNotFoundException;
+import com.demo.error.IsbnNotFoundException;
 import com.demo.model.BookMysql;
 import com.demo.repository.BookRepositoryMysql;
 import org.apache.commons.lang.StringUtils;
@@ -42,12 +42,12 @@ public class ServiceMysql implements Service {
     }
 
     @Override
-    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IsbnNotFound, BooknameNotFound {
+    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IsbnNotFoundException, BooknameNotFoundException {
         if (!StringUtils.isBlank(isbn) &&isbn.equals ("")|((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            throw new IsbnNotFound("don't set the isbn to null");
+            throw new IsbnNotFoundException("don't set the isbn to null");
         }
         if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
-            throw new BooknameNotFound("don't set the bookname to null");
+            throw new BooknameNotFoundException("don't set the bookname to null");
         }
         String datetime = df.format(new Date());
         if (!StringUtils.isBlank(bookname)){

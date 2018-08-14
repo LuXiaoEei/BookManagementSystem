@@ -1,6 +1,6 @@
-package com.demo.controller;
+package com.demo.util;
 
-import com.demo.exception.IsbnNotFound;
+import com.demo.error.IsbnNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +23,7 @@ public class ControllerTools {
     }
     public ApplicationContext getApplicationContext(){return applicationContext;}
 
-    public String isVaildIsbn(String isbn) throws IsbnNotFound {
+    public String isVaildIsbn(String isbn) throws IsbnNotFoundException {
         if (isbn==null) return null;
         String regex = "[^A-Za-z0-9]";
         if (!Pattern.compile(regex).matcher(isbn).find()){
@@ -31,18 +31,18 @@ public class ControllerTools {
                 if (isbn.startsWith("978")){
                     return isbn;
                 }else{
-                    throw new IsbnNotFound("isbn: "+isbn+" is not vaild");
+                    throw new IsbnNotFoundException("isbn: "+isbn+" is not vaild");
                 }
             }
             if (isbn.length()==10){
                 return "978"+isbn;
             }
         }
-        throw new IsbnNotFound("isbn: "+isbn+" is not vaild");
+        throw new IsbnNotFoundException("isbn: "+isbn+" is not vaild");
     }
 
     public String IdAutoGeneration() {
-        return UUID.randomUUID().toString();
+        return UUID.randomUUID().toString().replaceAll("\\-", "");
     }
 
 }

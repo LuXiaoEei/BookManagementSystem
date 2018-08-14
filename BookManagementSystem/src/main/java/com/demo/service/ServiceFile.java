@@ -1,7 +1,6 @@
 package com.demo.service;
 
-import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IsbnNotFound;
+import com.demo.error.BooknameNotFoundException;
 import com.demo.model.BookFile;
 import com.demo.repository.BookRepositoryFile;
 import org.apache.commons.lang.StringUtils;
@@ -30,11 +29,7 @@ public class ServiceFile implements Service {
     private BookRepositoryFile bookRepositoryFile;
 
     @Override
-    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IsbnNotFound {
-        if (isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            //response.getWriter().println("Error: in Gemfire model, you must input id!");
-            throw new IsbnNotFound("Error: isbn is needed");
-        }
+    public BookFile addbook(String id, String bookname, String isbn, String category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException{
         BookFile bookFile = new BookFile(id, isbn, bookname, category, press, df.format(new Date()), "", "", "");
         return bookRepositoryFile.save(bookFile);
     }
@@ -51,14 +46,11 @@ public class ServiceFile implements Service {
     }
 
     @Override
-    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException, IsbnNotFound, BooknameNotFound {
+    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException, BooknameNotFoundException {
         Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         ArrayList<BookFile> bookFile = new ArrayList<BookFile>();
-        if (!StringUtils.isBlank(isbn) && isbn.equals("") | ((isbn.equals("''") | (isbn.equals("\"\""))))) {
-            throw new IsbnNotFound("don't set the isbn to null");
-        }
         if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
-            throw new BooknameNotFound("don't set the bookname to null");
+            throw new BooknameNotFoundException("don't set the bookname to null");
         }
         for (BookFile element : allcontent) {
             if (element.getIsbn().equals(condition)) {
@@ -68,10 +60,8 @@ public class ServiceFile implements Service {
                     element.setPress((press.equals("''") | (press.equals("\"\""))) ? "" : press);
                 if (!StringUtils.isBlank(category))
                     element.setCategory((category.equals("''") | (category.equals("\"\""))) ? "" : category);
-                if (!StringUtils.isBlank(isbn))
-                    element.setIsbn(isbn);
-                String datetime = df.format(new Date());
-                element.setUpdatetime(datetime);
+                element.setIsbn(isbn);
+                element.setUpdatetime(df.format(new Date()));
                 bookFile.add(element);
             }
         }
@@ -117,7 +107,7 @@ public class ServiceFile implements Service {
         Collection<BookFile> result1=new ArrayList<>();
         if (!allcontent.isEmpty()) {
             for (BookFile temp : allcontent) {
-                if (!temp.getLoantime().equals("") && temp.getReturntime().equals("") || df.parse(temp.getReturntime()).before(df.parse(temp.getLoantime()))) {
+                if (!flag(temp)) {
                     result1.add(temp);
                 }
             }
@@ -132,7 +122,7 @@ public class ServiceFile implements Service {
         Collection<BookFile> target = allcontent.stream().filter(x -> x.getIsbn().equals(isbn)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         boolean flag = false;
         for (BookFile element : target) {
-            if (element.getLoantime().equals("") || (!element.getReturntime().equals("") && df.parse(element.getReturntime()).after(df.parse(element.getLoantime())))) {
+            if (flag(element)) {
                 element.setLoantime(df.format(new Date()));
                 element.setUser(user);
                 flag = true;
@@ -158,13 +148,10 @@ public class ServiceFile implements Service {
         Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         Collection<BookFile> target1 = allcontent.stream().filter(x -> !(x.getIsbn().equals(isbn) && x.getUser().equals(user))).collect(Collectors.toCollection(ArrayList<BookFile>::new));
         Collection<BookFile> target = allcontent.stream().filter(x -> x.getIsbn().equals(isbn) && x.getUser().equals(user)).collect(Collectors.toCollection(ArrayList<BookFile>::new));
-        BookFile temp=new BookFile();
         if (!target.isEmpty()){
-            for (BookFile temp1:target){
-                if (!temp1.getLoantime().equals("") && temp1.getReturntime().equals("") || df.parse(temp1.getReturntime()).before(df.parse(temp1.getLoantime()))) {
-                    temp = temp1;
+            for (BookFile temp:target){
+                if (!flag(temp)) {
                     temp.setUser(user);
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     temp.setReturntime(df.format(new Date()));
                     bookRepositoryFile.delete();
                     for (BookFile element1 : target1) {
@@ -178,5 +165,9 @@ public class ServiceFile implements Service {
             }
         }
         return "No books need to be returned!";
+    }
+/*flag indicates the state of book:true means availability*/
+    public boolean flag (BookFile element) throws ParseException {
+        return "".equals(element.getLoantime())||(!"".equals(element.getReturntime())&& df.parse(element.getReturntime()).after(df.parse(element.getLoantime())));
     }
 }

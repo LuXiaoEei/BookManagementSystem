@@ -2,7 +2,7 @@
 
 ### BookEntry
 
-- id: *String*, primary key ,it can be generated automaticallythe and needn't be set,which only contain numbers;
+- id: *String*, primary key ,it can be generated automaticallythe by uuid, and needn't be set.
 - bookname: *String*, the name of the book, it can't be empty;
 - isbn: *String*, the ISBN or ASBN of the book, the length of this field in the datasource must be 13,
 and the length of the vaild input must be 10 or 13, which only contains numbers or letters. If the length is 13,

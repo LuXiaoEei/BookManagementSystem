@@ -7,7 +7,6 @@ import org.springframework.data.gemfire.mapping.annotation.LuceneIndexed;
 import org.springframework.data.gemfire.mapping.annotation.Region;
 
 @Region(name = "BookGemfire")
-//public class BookGemfire implements Serializable {
 public class BookGemfire {
     @Id
     private String id;
