@@ -1,4 +1,4 @@
-package com.demo.controller;
+package com.demo.util;
 
 import com.demo.exception.IsbnNotFound;
 import org.springframework.beans.factory.annotation.Autowired;

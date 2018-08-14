@@ -1,4 +1,4 @@
-package com.demo.controller;
+package com.demo.util;
 
 import java.util.Date;
 
