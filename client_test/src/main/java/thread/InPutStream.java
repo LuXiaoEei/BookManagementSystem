@@ -1,4 +1,4 @@
-package demo;
+package thread;
 
 import java.io.File;
 import java.io.FileInputStream;

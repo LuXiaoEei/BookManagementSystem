@@ -1,6 +1,6 @@
 package test;
 
-import demo.RunnableDemo2;
+import thread.RunnableDemo2;
 
 public class clientTest {
      //运行测试

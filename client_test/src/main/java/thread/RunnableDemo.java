@@ -1,4 +1,4 @@
-package demo;
+package thread;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.*;
 import java.nio.file.Paths;
-import java.util.*;
 import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RunnableDemo implements Runnable {
     public static int id = 1;

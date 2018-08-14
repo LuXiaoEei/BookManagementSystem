@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9b10c17d-00a3-41a3-8e95-250a9273d235" name="Default" comment="" />
+    <list default="true" id="9b10c17d-00a3-41a3-8e95-250a9273d235" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client_test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/client.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/demo/InPutStream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Thread/InPutStream.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/demo/RunnableDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Thread/RunnableDemo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/demo/RunnableDemo2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Thread/RunnableDemo2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/test/clientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test/clientTest.java" afterDir="false" />
+    </list>
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,7 +19,7 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="InPutStream.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/demo/InPutStream.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Thread/InPutStream.java">
           <provider selected="true" editor-type-id="text-editor">
             <state>
               <caret column="9" selection-start-column="9" selection-end-column="9" />
@@ -29,19 +37,19 @@
         </entry>
       </file>
       <file leaf-file-name="RunnableDemo2.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo2.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="14" column="95" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="95" />
+            <state relative-caret-position="75">
+              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="RunnableDemo.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
-              <caret line="17" column="95" selection-start-line="17" selection-start-column="95" selection-end-line="17" selection-end-column="95" />
+              <caret line="14" column="95" selection-start-line="14" selection-start-column="95" selection-end-line="14" selection-end-column="95" />
             </state>
           </provider>
         </entry>
@@ -50,6 +58,13 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/main/java/Thread/RunnableDemo2.java" />
+      </list>
+    </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
@@ -66,6 +81,12 @@
   </component>
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1382" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -99,22 +120,6 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="client_test" type="b2602c69:ProjectViewProjectNode" />
-              <item name="client_test" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="demo" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="client_test" type="b2602c69:ProjectViewProjectNode" />
-              <item name="client_test" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -141,7 +146,7 @@
     </configuration>
     <configuration name="clientTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="example.clientTest" />
-      <module name="client_test" />
+      <module name="client" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -152,7 +157,7 @@
     </configuration>
     <configuration name="test_clinet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.test_clinet" />
-      <module name="client_test" />
+      <module name="client" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
@@ -225,10 +230,18 @@
       <workItem from="1533466574585" duration="14000" />
       <workItem from="1533466607084" duration="7000" />
     </task>
+    <task id="LOCAL-00001" summary="文档删除">
+      <created>1534234305728</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1534234305728</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26000" />
+    <option name="totallyTimeSpent" value="1171000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -251,7 +264,7 @@
       <window_info anchor="bottom" id="Java Enterprise" order="7" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.37077427" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.14710744" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.12231405" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20574887" />
@@ -298,8 +311,12 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="文档删除" />
+    <option name="LAST_COMMIT_MESSAGE" value="文档删除" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="950">
           <caret line="48" column="57" lean-forward="true" selection-start-line="48" selection-start-column="57" selection-end-line="48" selection-end-column="57" />
@@ -321,7 +338,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/demo/ThreadDemo2.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1425">
           <caret line="63" column="17" lean-forward="true" selection-start-line="63" selection-start-column="17" selection-end-line="63" selection-end-column="17" />
@@ -496,7 +513,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/test/test_clinet.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/demo/InPutStream.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Thread/InPutStream.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="9" selection-start-column="9" selection-end-column="9" />
@@ -510,17 +527,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo2.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="14" column="95" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="95" />
+        <state relative-caret-position="75">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/demo/RunnableDemo.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Thread/RunnableDemo.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="17" column="95" selection-start-line="17" selection-start-column="95" selection-end-line="17" selection-end-column="95" />
+          <caret line="14" column="95" selection-start-line="14" selection-start-column="95" selection-end-line="14" selection-end-column="95" />
         </state>
       </provider>
     </entry>
