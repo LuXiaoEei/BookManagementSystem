@@ -1,7 +1,6 @@
 package com.demo.service;
 
-import com.demo.exception.BooknameNotFound;
-import com.demo.exception.IsbnNotFound;
+import com.demo.error.BooknameNotFoundException;
 import com.demo.model.BookFile;
 import com.demo.repository.BookRepositoryFile;
 import org.apache.commons.lang.StringUtils;
@@ -47,11 +46,11 @@ public class ServiceFile implements Service {
     }
 
     @Override
-    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException, BooknameNotFound {
+    public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException, BooknameNotFoundException {
         Collection<BookFile> allcontent = bookRepositoryFile.readFileSource().values();
         ArrayList<BookFile> bookFile = new ArrayList<BookFile>();
         if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
-            throw new BooknameNotFound("don't set the bookname to null");
+            throw new BooknameNotFoundException("don't set the bookname to null");
         }
         for (BookFile element : allcontent) {
             if (element.getIsbn().equals(condition)) {

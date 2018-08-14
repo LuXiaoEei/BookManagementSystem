@@ -1,11 +1,11 @@
-package com.demo.exception;
+package com.demo.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class PageNotFound extends RuntimeException {
-    public PageNotFound(String exception) {
+public class PageNotFoundException extends RuntimeException {
+    public PageNotFoundException(String exception) {
         super(exception);
     }
 

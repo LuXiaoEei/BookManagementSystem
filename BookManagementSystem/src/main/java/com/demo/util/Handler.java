@@ -1,5 +1,5 @@
 package com.demo.util;
-import com.demo.exception.*;
+import com.demo.error.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,29 +20,29 @@ public class Handler extends ResponseEntityExceptionHandler {
         System.out.println("====================================================================");
     }
 
-    @ExceptionHandler(IsbnNotFound.class)
-    public final ResponseEntity<ErrorDetails> handleIsbnNotFoundException(IsbnNotFound ex, WebRequest request) {
+    @ExceptionHandler(IsbnNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleIsbnNotFoundException(IsbnNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false),500);
         printLog(ex,request);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @ExceptionHandler(BooknameNotFound.class)
-    public final ResponseEntity<ErrorDetails> handleBooknameNotFoundException(BooknameNotFound ex, WebRequest request) {
+    @ExceptionHandler(BooknameNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleBooknameNotFoundException(BooknameNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false),500);
         printLog(ex,request);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @ExceptionHandler(DatabaseError.class)
-    public final ResponseEntity<ErrorDetails> handleDatabaseNotFoundException(DatabaseError ex, WebRequest request) {
+    @ExceptionHandler(DatabaseSelectException.class)
+    public final ResponseEntity<ErrorDetails> handleDatabaseNotFoundException(DatabaseSelectException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false),500);
         printLog(ex,request);
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    @ExceptionHandler(PageNotFound.class)
-    public final ResponseEntity<ErrorDetails> handleDatabaseNotFoundException(PageNotFound ex, WebRequest request) {
+    @ExceptionHandler(PageNotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleDatabaseNotFoundException(PageNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(),
                 request.getDescription(false),404);
         printLog(ex,request);

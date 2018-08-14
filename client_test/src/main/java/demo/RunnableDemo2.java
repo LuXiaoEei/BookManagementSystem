@@ -34,7 +34,7 @@ public class RunnableDemo2 implements Runnable {
                 }
                 //处理字符
                 for (int i = 0; i < a.length; i++) {
-                    String item = a[i].replaceAll("\\?", "");
+                    String item = a[i].replaceAll("\\?", "").replaceAll("\\-","");
                     item = item.replaceAll("\"", "");
                     item = item.trim();
                     a[i] = item;
