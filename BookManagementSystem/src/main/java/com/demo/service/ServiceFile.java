@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service()
 @Qualifier("serviceFile")
+/**
+ * 实现类的命名一般叫**ServiceImpl
+ * 有一些同样的毛病参考ServiceGemfire我加的注释
+ */
 public class ServiceFile implements Service {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

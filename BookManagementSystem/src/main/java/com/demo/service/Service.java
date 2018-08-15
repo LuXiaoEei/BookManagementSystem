@@ -7,6 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 
+/**
+ * 接口里面的方法默认是公共的，public关键字不需要加
+ * service命名太草率了，最好一眼就能看出来做的什么业务，比如：BookService
+ */
 public interface Service {
     public Object addbook(String id , String bookname, String isbn, String  category, String press, String user, String loantime, String returntime, String updatetime, HttpServletResponse response) throws IOException, IsbnNotFoundException;
 

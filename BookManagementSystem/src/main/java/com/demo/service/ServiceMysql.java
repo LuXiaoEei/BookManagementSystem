@@ -14,7 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
-
+/**
+ * 实现类的命名一般叫**ServiceImpl
+ * 有一些同样的毛病参考ServiceGemfire我加的注释
+ */
 @org.springframework.stereotype.Service()
 @Qualifier("serviceMysql")
 public class ServiceMysql implements Service {
@@ -52,6 +55,10 @@ public class ServiceMysql implements Service {
         }
         String datetime = df.format(new Date());
         if (!StringUtils.isBlank(bookname)){
+            /**
+             * todo 这里的三目运算看起来毫无意义？？？  几个更新是更新同一张表 没必要写多个sql、更新多次 尽量减少与数据库交互次数，提高效率
+             * 这里改成一条sql 只更新一次
+             */
             bookRepositoryMysql.updateBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname, datetime, condition);
         }
         if (!StringUtils.isBlank(category)){
@@ -104,6 +111,9 @@ public class ServiceMysql implements Service {
     }
 
     @Override
+    /**
+     * 返回内容参考我在controller里面加的注释
+     */
     public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws IOException {
         Collection<BookMysql> res = bookRepositoryMysql.serachloanedBookByBooknameAndIsbn(user,isbn);
         if (res.isEmpty()){

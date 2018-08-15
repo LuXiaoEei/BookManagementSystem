@@ -43,6 +43,11 @@ public class ServiceGemfire implements Service {
     }
 
     @Override
+    /**
+     * 这个方法可读性略差   同一个集合遍历了多次  不知所云
+     * 看了下这个判断形式  为什么不能外层遍历 内层用if判断再去set
+     * 既然无论如何要element.setUpdatetime(datetime); 前面的set可以不要
+     */
     public Object updateBookByIsbn(String press, String category, String bookname, String isbn, String condition, HttpServletResponse response) throws IOException,BooknameNotFoundException {
         if (!StringUtils.isBlank(bookname) && bookname.replaceAll(" ","").equals("") | ((bookname.replaceAll(" ","").equals("''") | (bookname.replaceAll(" ","").equals("\"\""))))) {
             throw new BooknameNotFoundException("don't set the bookname to null");
@@ -51,6 +56,9 @@ public class ServiceGemfire implements Service {
         Collection<BookGemfire> result = bookRepositoryGemfire.findByIsbn(condition);
         if (!StringUtils.isBlank(bookname))
             for (BookGemfire element : result) {
+                /**
+                 * 用||判断"或"，前面条件满足后不会再判断后面的条件，&&同理
+                 */
                 element.setBookname((bookname.equals("''") | (bookname.equals("\"\""))) ? "" : bookname);
                 element.setUpdatetime(datetime);
             }
@@ -79,17 +87,27 @@ public class ServiceGemfire implements Service {
 
     @Override
     public Object describeBook(String start, String nums, HttpServletResponse response) {
+        /**
+         * .equals方法把常量放前面减少空指针异常，养成这个习惯
+         */
         int num1 = (nums.equals("all")) ? -1 : Integer.valueOf(nums);
         return bookRepositoryGemfire.describe(num1);
     }
 
     @Override
     public Object selectByBooknameLike(String bookname, HttpServletResponse response) {
+        /**
+         * 在查询前判断条件可用性，既然新增时不允许书名为空查询时当然也不可以，以此来减少与数据库交互次数，减轻数据库负担
+         */
         return bookRepositoryGemfire.findByBooknameLike("%" + bookname + "%");
     }
 
     @Override
     public Object selectByUser(String user, HttpServletResponse response) throws ParseException {
+        /**
+         * todo  这里把结果放进另一个集合的意义何在，如果为了过滤为什么不加在查询条件中
+         * 另外  为什么要把这些记录过滤掉
+         */
         Collection<BookGemfire> result =bookRepositoryGemfire.findByUser(user);
         Collection<BookGemfire> result1=new ArrayList<>();
         if (!result.isEmpty()) {
@@ -124,6 +142,9 @@ public class ServiceGemfire implements Service {
     }
 
     @Override
+    /**
+     * todo 驼峰命名法 returnbookByUserAndIsbn-->???
+     */
     public Object returnbookByUserAndIsbn(String user, String isbn, HttpServletResponse response) throws ParseException {
         Collection<BookGemfire> result = bookRepositoryGemfire.describe(-1);
         result = result.stream().filter(book -> book.getIsbn().equals(isbn) & book.getUser().equals(user)).collect(Collectors.toList());

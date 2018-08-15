@@ -14,6 +14,12 @@ public interface BookRepositoryMysql extends CrudRepository<BookMysql, Integer> 
 //    @Query(value = "SELECT id,name,age,email FROM BookGemfire")
 //    Collection<BookGemfire> getAll();
 
+    /**
+     * 这么古老的与mysql数据库交互方式你们能找到并用起来也是不容易
+     * mybatis 你值得拥有
+     * 有空看一下“sql注入“
+     * @return
+     */
     @Query(value="select count(id) from BookMysql")
     Integer countAll();
 
